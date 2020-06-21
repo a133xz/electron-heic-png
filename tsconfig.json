@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "strictNullChecks": false,
+        "importHelpers": true,
+        "moduleResolution": "node",
+        "target": "esnext",
+        "module": "esnext",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "allowJs": true,
+        "baseUrl": ".",
+        "noEmit": true
+    },
+    "include": [
+        "./src/**/*.ts",
+        "./src/**/*.vue"
+    ],
+    "exclude": [
+        "assets",
+        "node_modules",
+        "*.js"
+    ],
+    "outDir": "./dist"
+}
