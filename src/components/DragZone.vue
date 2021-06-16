@@ -30,11 +30,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-// import convert from "heic-convert";
-//const convert = require("heic-convert");
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "DragZone",
   data: () => {
     return {
@@ -74,13 +72,13 @@ export default Vue.extend({
     },
     convertToHeic: (file: any) => {
       (async () => {
-        const inputBuffer = file;
-        const outputBuffer = await convert({
-          buffer: inputBuffer, // the HEIC file buffer
-          format: "JPEG", // output format
-          quality: 1 // the jpeg compression quality, between 0 and 1
-        });
-        console.log(outputBuffer);
+        // const inputBuffer = file;
+        // const outputBuffer = await convert({
+        //   buffer: inputBuffer, // the HEIC file buffer
+        //   format: "JPEG", // output format
+        //   quality: 1 // the jpeg compression quality, between 0 and 1
+        // });
+        // console.log(outputBuffer);
         debugger;
       })();
     },
