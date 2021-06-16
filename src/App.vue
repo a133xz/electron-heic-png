@@ -1,30 +1,19 @@
 <template>
-  <div>
-    <p>
-      <Example />
-    </p>
-    <p class="text">{{ data }}</p>
+  <div id="app">
+    <TypeSelector></TypeSelector>
+    <DragZone></DragZone>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue"
-import Example from "./components/Example.vue"
+import Vue from "vue";
+import TypeSelector from "./components/TypeSelector.vue";
+import DragZone from "./components/DragZone.vue";
 
 export default Vue.extend({
   components: {
-    Example,
-  },
-  data() {
-    return {
-      data: "Hello from Vuejs :)",
-    }
-  },
-})
+    TypeSelector,
+    DragZone
+  }
+});
 </script>
-
-<style lang="scss" scoped>
-.text {
-  color: green;
-}
-</style>

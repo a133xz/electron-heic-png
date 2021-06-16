@@ -1,7 +1,7 @@
 {
   "name": "electron-heic-png",
   "description": "Electron program to convert HEIC to PNG",
-  "version": "1.0.0",
+  "version": "1.0.0 ",
   "author": {
     "name": "Antonio R"
   },
@@ -19,8 +19,8 @@
   "license": "MIT",
   "main": "src/electron.js",
   "scripts": {
-    "vue-serve": "parcel -p 3000 index.html --out-dir build",
-    "vue-build": "parcel build ./index.html --out-dir build --public-url ./",
+    "vue-serve": "parcel ./src/index.html -p 3000 --out-dir build",
+    "vue-build": "parcel build ./src/index.html --out-dir build --public-url ./",
     "serve": "concurrently \"cross-env BROWSER=none yarn vue-serve\" \"wait-on http://localhost:3000 && electron . \"",
     "clean-build": "rm -rf build/ .cache dist/",
     "electron-build": "electron-builder -mwl",
@@ -32,7 +32,10 @@
   "dependencies": {
     "electron-download": "^4.1.1",
     "electron-is-dev": "^1.2.0",
+    "electron-log": "^4.2.2",
+    "electron-settings": "^4.0.1",
     "global": "^4.4.0",
+    "heic-convert": "^1.2.4",
     "parcel": "^1.12.4",
     "vue": "^2.6.11",
     "vue-hot-reload-api": "^2.3.4"
@@ -47,7 +50,7 @@
     "bundlesize": "^0.18.0",
     "concurrently": "^5.2.0",
     "cross-env": "^7.0.2",
-    "electron": "^9.0.0",
+    "electron": ">= 2",
     "electron-builder": "^22.7.0",
     "eslint": "^6.0.0",
     "eslint-config-prettier": "^6.11.0",

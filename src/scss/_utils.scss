@@ -1,0 +1,73 @@
+//
+// Typography
+//
+$font-fallback: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  'Helvetica Neue', Arial, sans-serif;
+
+//
+// Rem calc
+//
+@function rem-calc($size) {
+  $remSize: $size / $base-font-size;
+  // 2 decimals
+  @return #{round($remSize * 100) / 100}rem;
+}
+
+//
+// Spacer
+// inspired https://github.com/primer/css/blob/master/src/support/variables/layout.scss
+$spacer: $space-unit !default;
+
+// Our spacing scale
+$spacer-none: 0 !default; // 0
+$spacer-xxs: round($spacer / 2) !default; // 4px
+$spacer-xs: rem-calc($spacer) !default; // 8px
+$spacer-sm: rem-calc($spacer * 2) !default; // 16px
+$spacer-md: rem-calc($spacer * 3) !default; // 24px
+$spacer-lg: rem-calc($spacer * 4) !default; // 32px
+$spacer-xl: rem-calc($spacer * 5) !default; // 40px
+$spacer-xxl: rem-calc($spacer * 6) !default; // 40px
+
+//
+// Breakpoint
+// from https://github.com/wearethescenery/ether/blob/master/src/_mixins.scss
+$screen-xs: 414px !default;
+$screen-sm: 768px !default;
+$screen-md: 960px !default;
+$screen-lg: 1040px !default;
+$screen-xl: 1440px !default;
+$screen-xxl: 1640px !default;
+
+@mixin breakpoint($class) {
+  @if $class == mobile-only {
+    @media (max-width: #{$screen-sm}) {
+      @content;
+    }
+  } @else if $class == xs {
+    @media (min-width: #{$screen-xs}) {
+      @content;
+    }
+  } @else if $class == sm {
+    @media (min-width: #{$screen-sm}) {
+      @content;
+    }
+  } @else if $class == md {
+    @media (min-width: #{$screen-md}) {
+      @content;
+    }
+  } @else if $class == lg {
+    @media (min-width: #{$screen-lg}) {
+      @content;
+    }
+  } @else if $class == xl {
+    @media (min-width: #{$screen-xl}) {
+      @content;
+    }
+  } @else if $class == xxl {
+    @media (min-width: #{$screen-xxl}) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint mixin supports: mobile-only, sm, md, lg";
+  }
+}

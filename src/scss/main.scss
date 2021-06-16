@@ -1,0 +1,21 @@
+// Modules
+@import "variables";
+@import "utils";
+// SCSS
+@import "normalize";
+@import "app";
+
+// The organization is simple:
+//
+// _variables --> base font-size, typography and colours,
+// _utils --> breakpoints, space utilities, rem-cal for the fonts
+// _normalize --> a tiny version to cover missing scenarios
+// _app --> pretty much everything left
+//
+// I could possible separate `_utils` in mixins and functions or
+// create a new file for `typography` but since this project is
+// about creating a MVP this is the aproach I found that works better
+//
+// It's important to say that neither `_utils` or `variable` should have any css,
+// only normalize and app.
+// In summanry you'll only use Variables and app

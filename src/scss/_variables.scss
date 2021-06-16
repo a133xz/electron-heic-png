@@ -1,0 +1,45 @@
+// SCSS Variables
+$base-font-size: 18;
+$base-font-size-mobile: 16;
+$space-unit: 8;
+$screen-lg: 600px;
+
+// Colors
+$colors: (
+  bg: #eaebf3,
+  dark: #353535,
+  label: #7f8184,
+  selector: #00bbf9
+);
+
+//  Typography
+@mixin font-primary {
+  font-family: orpheuspro, $font-fallback;
+}
+
+@mixin font-regular {
+  @include font-primary;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+@mixin font-bold {
+  @include font-primary;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+// Spacer
+@mixin p-y-spacer-lg {
+  padding-top: $spacer-lg;
+  padding-bottom: $spacer-lg;
+}
+
+@mixin p-y-spacer-xxl {
+  padding-top: $spacer-xxl;
+  padding-bottom: $spacer-xxl;
+}
+
+@mixin m-b-spacer-lg {
+  margin-bottom: $spacer-lg;
+}

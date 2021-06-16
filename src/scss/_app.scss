@@ -1,0 +1,65 @@
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Default colors
+:root {
+  @each $color, $value in $colors {
+    --brand-#{$color}: #{$value};
+  }
+}
+
+// Base font
+html {
+  font-size: #{$base-font-size}px;
+  @include breakpoint(mobile-only) {
+    font-size: #{$base-font-size-mobile}px;
+  }
+}
+
+//
+// Layout
+//
+body {
+  @include font-regular;
+  font-size: 1rem;
+  color: var(--brand-dark);
+  background-color: var(--brand-bg);
+  padding: 0;
+}
+
+#app {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin: $spacer-xxl auto $spacer-md;
+  max-width: $screen-lg;
+}
+
+a {
+  color: var(--color-dark);
+  cursor: pointer;
+  text-decoration: none;
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+//
+// Utilities
+//
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+.p-y-spacer-lg {
+  @include p-y-spacer-lg;
+}
