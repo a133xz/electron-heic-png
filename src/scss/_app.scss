@@ -13,6 +13,7 @@
 
 // Base font
 html {
+  -webkit-app-region: drag;
   font-size: #{$base-font-size}px;
   @include breakpoint(mobile-only) {
     font-size: #{$base-font-size-mobile}px;

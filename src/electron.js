@@ -8,8 +8,11 @@ let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 680,
+    titleBarStyle: "hiddenInset",
+    width: 340,
+    height: 550,
+    minWidth: 340,
+    minHeight: 550,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true
