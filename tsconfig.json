@@ -23,5 +23,10 @@
         "node_modules",
         "*.js"
     ],
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "paths": {
+        "*": [
+            "./src/@types/*.d.ts"
+        ]
+    },
 }

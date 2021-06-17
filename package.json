@@ -12,6 +12,9 @@
     "vuejs",
     "heic to png"
   ],
+  "browserslist": [
+    "electron >= 9.0.4"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/a133xz/electron-heic-png.git"
@@ -30,6 +33,7 @@
     "changelog": "github_changelog_generator -u a133xz -p electron-heic-png"
   },
   "dependencies": {
+    "detect-character-encoding": "^0.8.0",
     "electron-is-dev": "^1.2.0",
     "heic-convert": "^1.2.4",
     "parcel": "^2.0.0-beta.3.1",

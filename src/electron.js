@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const electron = require("electron");
-const app = electron.app;
-
-const BrowserWindow = electron.BrowserWindow;
+const { app, BrowserWindow, ipcMain, dialog, TouchBar } = require("electron");
 
 const path = require("path");
 const isDev = require("electron-is-dev");
@@ -12,7 +9,11 @@ let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
-    height: 680
+    height: 680,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true
+    }
   });
 
   mainWindow.loadURL(
@@ -33,4 +34,22 @@ app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+/** Main logic */
+const fs = require("fs");
+const convert = require("heic-convert");
+
+ipcMain.on("convertToHeic", (event, filePath) => {
+  (async () => {
+    const inputBuffer = fs.readFileSync(filePath);
+    const outputBuffer = await convert({
+      buffer: inputBuffer, // the HEIC file buffer
+      format: "JPEG", // output format
+      quality: 1 // the jpeg compression quality, between 0 and 1
+    });
+    const base64 = Buffer.from(outputBuffer).toString("base64");
+    const base64Encoded = "data:image/jpg;base64," + base64;
+    event.reply("fileConverted", base64Encoded);
+  })();
 });

@@ -32,6 +32,16 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
+const expose: any = window;
+const convert = require("heic-convert");
+
+//const { readFileSync } = expose.node;
+const electron = expose.electron;
+
+interface MyFile extends File {
+  path?: string;
+}
+
 export default defineComponent({
   name: "DragZone",
   data: () => {
@@ -56,33 +66,41 @@ export default defineComponent({
       event.preventDefault();
       event.stopPropagation();
       console.log("File(s) dropped");
-      const files = event.dataTransfer.items;
+      const files = event.dataTransfer.files;
       // Use DataTransferItemList interface to access the file(s)
       for (var i = 0; i < files.length; i++) {
+        const file: MyFile = files[i];
         // If dropped items aren't heic, reject them
-        if (files[i].type === "image/png") {
-          const file = files[i].getAsFile();
-          this.convertToHeic(file);
-          // const preview = URL.createObjectURL(file);
-          // this.images.push(preview);
+        if (file.type === "image/heic") {
+          const filePath = file.path;
+          //this.convertToHeic(filePath);
+          this.bgTask(filePath);
         } else {
           // Do something here
         }
       }
+      return false;
     },
-    convertToHeic: (file: any) => {
-      (async () => {
-        // const inputBuffer = file;
-        // const outputBuffer = await convert({
-        //   buffer: inputBuffer, // the HEIC file buffer
-        //   format: "JPEG", // output format
-        //   quality: 1 // the jpeg compression quality, between 0 and 1
-        // });
-        // console.log(outputBuffer);
-        debugger;
-      })();
+    bgTask: function (filePath: String) {
+      electron.send("convertToHeic", filePath);
+      electron.on("fileConverted", (event: any, base64: string) => {
+        this.images.push(base64);
+      });
     },
-    handleFiles: () => {}
+    // convertToHeic: async function (filePath: String) {
+    //   var start = performance.now();
+    //   const inputBuffer = readFileSync(filePath);
+    //   const outputBuffer = await convert({
+    //     buffer: inputBuffer, // the HEIC file buffer
+    //     format: "JPEG", // output format
+    //     quality: 1 // the jpeg compression quality, between 0 and 1
+    //   });
+    //   const base64 = Buffer.from(outputBuffer).toString("base64");
+    //   this.images.push("data:image/jpg;base64," + base64);
+    //   // code being timed...
+    //   var duration = performance.now() - start;
+    //   console.log(duration);
+    // },
   }
 });
 </script>
@@ -105,7 +123,8 @@ export default defineComponent({
   transition: box-shadow 0.3s ease-in;
   &.active,
   &:hover {
-    box-shadow: -8px -8px 10px 0 rgba(255, 255, 255, 0.5), 8px 8px 10px 0 rgba(0, 39, 80, 0.16);
+    box-shadow: -8px -8px 10px 0 rgba(255, 255, 255, 0.5),
+      8px 8px 10px 0 rgba(0, 39, 80, 0.16);
   }
 }
 
