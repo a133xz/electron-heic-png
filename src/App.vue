@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <TypeSelector></TypeSelector>
-    <DragZone></DragZone>
+    <TypeSelector @update-format="updateFormat"></TypeSelector>
+    <DragZone :format="format"></DragZone>
   </div>
 </template>
 
@@ -14,6 +14,14 @@ export default defineComponent({
   components: {
     TypeSelector,
     DragZone
+  },
+  data: () => ({
+    format: ""
+  }),
+  methods: {
+    updateFormat(format: string) {
+      this.format = format;
+    }
   }
 });
 </script>

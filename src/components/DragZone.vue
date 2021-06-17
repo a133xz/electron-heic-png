@@ -28,7 +28,7 @@
     </div>
     <ul class="list">
       <li v-for="(image, index) in images" :key="index">
-        <div class="list-item">
+        <div class="list-item" v-on:click="openLink(image.path)">
           <div class="list-item-img">
             <img :src="image.src" alt="preview" />
           </div>
@@ -140,10 +140,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
+// const convert = require("heic-convert");
+// const { readFileSync } = expose.node;
 const expose: any = window;
-const convert = require("heic-convert");
-
-//const { readFileSync } = expose.node;
 const electron = expose.electron;
 
 interface MyFile extends File {
@@ -153,18 +152,25 @@ interface MyFile extends File {
 interface Item {
   src: string;
   name: string;
+  path: string;
 }
 
 interface Items extends Array<Item> {}
 
 export default defineComponent({
   name: "DragZone",
+  props: {
+    format: {
+      type: String
+    }
+  },
   data: () => {
     return {
       active: false,
       isLoading: false,
       hasFiles: false,
-      images: [] as Items
+      images: [] as Items,
+      isFired: false
     };
   },
   methods: {
@@ -192,23 +198,34 @@ export default defineComponent({
         const file: MyFile = files[i];
         if (file.type === "image/heic") {
           //this.convertToHeic(file.path);
-          this.bgTask(file.path, file.name);
+          this.convertFile(file.path, file.name);
         } else {
           // Do something here, like error
         }
       }
       return false;
     },
-    bgTask: function (filePath: String, fileName: string) {
-      electron.send("convertToHeic", filePath);
-      electron.on("fileConverted", (event: any, base64: string) => {
-        this.isCompleted(base64, fileName);
-      });
+    convertFile: function (filePath: string, fileName: string) {
+      const outputFormat = this.format;
+      electron.send("convertToHeic", { filePath, fileName, outputFormat });
+      // Only the first time. I guess it could be part of Vuejs init event
+      if (!this.isFired) {
+        electron.on(
+          "fileConverted",
+          (event: any, base64: string, newPath: string) => {
+            this.isCompleted(base64, fileName, newPath);
+          }
+        );
+        this.isFired = true;
+      }
     },
-    isCompleted: function (base64: string, fileName: string) {
-      this.images.push({ src: base64, name: fileName });
+    isCompleted: function (base64: string, fileName: string, fullPath: string) {
+      this.images.push({ src: base64, name: fileName, path: fullPath });
       this.isLoading = false;
       this.active = false;
+    },
+    openLink(path: string) {
+      electron.send("openLink", path);
     }
 
     // convertToHeic: async function (filePath: String) {
@@ -233,11 +250,9 @@ export default defineComponent({
 // Area
 .area {
   position: relative;
-  width: 90vw;
-  height: 90vw;
   border-radius: 50%;
-  max-width: 300px;
-  max-height: 300px;
+  width: 280px;
+  height: 280px;
   margin: 2rem auto;
   text-align: center;
   display: flex;
@@ -288,6 +303,8 @@ export default defineComponent({
   display: flex;
   align-content: center;
   justify-content: space-around;
+  padding-bottom: 25px;
+  cursor: pointer;
 
   &-img {
     max-height: 35px;
@@ -309,6 +326,7 @@ export default defineComponent({
   &-subtitle {
     font-size: 9px;
     text-decoration: underline;
+    cursor: pointer;
   }
   &-svg {
     display: flex;

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { app, BrowserWindow, ipcMain, dialog, TouchBar } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, TouchBar, shell } = require("electron");
 
 const path = require("path");
 const isDev = require("electron-is-dev");
@@ -10,7 +10,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     titleBarStyle: "hiddenInset",
     width: 340,
-    height: 550,
+    height: 450,
     minWidth: 340,
     minHeight: 550,
     webPreferences: {
@@ -42,17 +42,37 @@ app.on("activate", () => {
 /** Main logic */
 const fs = require("fs");
 const convert = require("heic-convert");
+const dir = "format-pictures";
 
-ipcMain.on("convertToHeic", (event, filePath) => {
+ipcMain.on("convertToHeic", (event, { filePath, fileName, outputFormat }) => {
+  outputFormat = outputFormat || "PNG";
   (async () => {
     const inputBuffer = fs.readFileSync(filePath);
     const outputBuffer = await convert({
       buffer: inputBuffer, // the HEIC file buffer
-      format: "JPEG", // output format
+      format: outputFormat, // output format
       quality: 1 // the jpeg compression quality, between 0 and 1
     });
     const base64 = Buffer.from(outputBuffer).toString("base64");
+
+    const format = outputFormat.toLocaleLowerCase();
+    const localDirectory = filePath.replace(fileName, "") + dir.replace("format", format);
+
+    if (!fs.existsSync(localDirectory)) {
+      fs.mkdirSync(localDirectory);
+    }
+
+    const newFileName = fileName.replace(".heic", `.${format}`);
+    const fullPath = `${localDirectory}/${newFileName}`;
+
+    await fs.writeFileSync(fullPath, outputBuffer);
+
     const base64Encoded = "data:image/jpg;base64," + base64;
-    event.reply("fileConverted", base64Encoded);
+
+    event.reply("fileConverted", base64Encoded, fullPath);
   })();
+});
+
+ipcMain.on("openLink", (event, path) => {
+  shell.showItemInFolder(path);
 });
