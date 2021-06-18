@@ -1,7 +1,7 @@
 {
   "name": "electron-heic-png",
   "description": "Electron program to convert HEIC to PNG",
-  "version": "1.0.0 ",
+  "version": "1.0.1",
   "author": {
     "name": "Antonio R"
   },
@@ -23,10 +23,10 @@
   "main": "src/electron.js",
   "scripts": {
     "vue-serve": "parcel ./src/index.html -p 3000 --dist-dir build",
-    "vue-build": "parcel build ./src/index.html --dist-dir build --public-url ./",
-    "serve": "concurrently \"cross-env BROWSER=none yarn vue-serve\" \"wait-on http://localhost:3000 && electron . \"",
+    "vue-build": "parcel ./src/index.html --dist-dir build --public-url ./",
+    "serve": "yarn clean-build && concurrently \"cross-env BROWSER=none yarn vue-serve\" \"wait-on http://localhost:3000 && electron . \"",
     "clean-build": "rm -rf build/ .cache dist/",
-    "electron-build": "electron-builder -mwl",
+    "electron-build": "electron-builder -m",
     "build:local": "yarn clean-build && yarn vue-build && yarn electron-build",
     "build": "yarn vue-build",
     "patch": "yarn changelog && npm version patch -m \"v%s\"",
@@ -35,6 +35,7 @@
   "dependencies": {
     "detect-character-encoding": "^0.8.0",
     "electron-is-dev": "^1.2.0",
+    "electron-reloader": "^1.2.1",
     "heic-convert": "^1.2.4",
     "parcel": "^2.0.0-beta.3.1",
     "vue": "^3.0.0"

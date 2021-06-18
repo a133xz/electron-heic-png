@@ -14,9 +14,7 @@
       @drop="drop"
       v-if="!isLoading"
     >
-      <label class="label" for="fileElem"
-        >Choose files or drag and drop your HEIC files here
-      </label>
+      <label class="label" for="fileElem">Drop your .HEIC files here </label>
       <input
         id="fileElem"
         class="input"
@@ -28,109 +26,31 @@
     </div>
     <ul class="list">
       <li v-for="(image, index) in images" :key="index">
-        <div class="list-item" v-on:click="openLink(image.path)">
-          <div class="list-item-img">
+        <div
+          class="list-item"
+          v-on:click="openLink(image.path)"
+          v-if="image.path"
+        >
+          <div class="list-item-img" v-if="image.path">
             <img :src="image.src" alt="preview" />
           </div>
           <div class="list-item-text">
             <div class="list-item-title">
               {{ image.name }} converted to .PNG
             </div>
-            <div class="list-item-subtitle">
-              click here to open your converted image
-            </div>
+            <div class="list-item-subtitle">Open folder</div>
           </div>
           <div class="list-item-svg">
-            <svg
-              width="20px"
-              height="20px"
-              viewBox="0 0 20 20"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-            >
-              <defs>
-                <path
-                  d="M13.125,12.508125 L9.821875,9.1875 C11.4622067,7.20832018 11.2575238,4.28942367 9.35702986,2.55853848 C7.45653591,0.827653288 4.53126838,0.895930478 2.71359943,2.71359943 C0.895930478,4.53126838 0.827653288,7.45653591 2.55853848,9.35702986 C4.28942367,11.2575238 7.20832018,11.4622067 9.1875,9.821875 L12.508125,13.125 L13.125,12.508125 Z M2.1875,6.125 C2.1875,3.9503788 3.9503788,2.1875 6.125,2.1875 C8.2996212,2.1875 10.0625,3.9503788 10.0625,6.125 C10.0625,8.2996212 8.2996212,10.0625 6.125,10.0625 C3.9503788,10.0625 2.1875,8.2996212 2.1875,6.125 Z"
-                  id="path-1"
-                ></path>
-                <filter
-                  x="-50.8%"
-                  y="-50.8%"
-                  width="201.5%"
-                  height="201.5%"
-                  filterUnits="objectBoundingBox"
-                  id="filter-2"
-                >
-                  <feOffset
-                    dx="2"
-                    dy="2"
-                    in="SourceAlpha"
-                    result="shadowOffsetOuter1"
-                  ></feOffset>
-                  <feGaussianBlur
-                    stdDeviation="1"
-                    in="shadowOffsetOuter1"
-                    result="shadowBlurOuter1"
-                  ></feGaussianBlur>
-                  <feColorMatrix
-                    values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.1 0"
-                    type="matrix"
-                    in="shadowBlurOuter1"
-                    result="shadowMatrixOuter1"
-                  ></feColorMatrix>
-                  <feOffset
-                    dx="-2"
-                    dy="-2"
-                    in="SourceAlpha"
-                    result="shadowOffsetOuter2"
-                  ></feOffset>
-                  <feGaussianBlur
-                    stdDeviation="1"
-                    in="shadowOffsetOuter2"
-                    result="shadowBlurOuter2"
-                  ></feGaussianBlur>
-                  <feColorMatrix
-                    values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.5 0"
-                    type="matrix"
-                    in="shadowBlurOuter2"
-                    result="shadowMatrixOuter2"
-                  ></feColorMatrix>
-                  <feMerge>
-                    <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
-                    <feMergeNode in="shadowMatrixOuter2"></feMergeNode>
-                  </feMerge>
-                </filter>
-              </defs>
-              <g
-                id="Symbols"
-                stroke="none"
-                stroke-width="1"
-                fill="none"
-                fill-rule="evenodd"
-              >
-                <g id="Group" transform="translate(-245.000000, 3.000000)">
-                  <g id="Group-2" transform="translate(248.000000, 0.000000)">
-                    <g id="Actions-/-Operations-/-search-/-24">
-                      <g id="Fill">
-                        <use
-                          fill="black"
-                          fill-opacity="1"
-                          filter="url(#filter-2)"
-                          xlink:href="#path-1"
-                        ></use>
-                        <use
-                          fill="#A9ACB0"
-                          fill-rule="evenodd"
-                          xlink:href="#path-1"
-                        ></use>
-                      </g>
-                    </g>
-                  </g>
-                </g>
-              </g>
+            <svg class="svg-item" viewBox="0 0 20 20">
+              <use xlink:href="#svg-search-icon" />
             </svg>
           </div>
+        </div>
+        <div v-else class="list-item-preview">
+          <div class="list-item-title">Converting {{ image.name }}</div>
+          <svg viewBox="0 0 20 20" style="width: 18px">
+            <use xlink:href="#svg-spinner" />
+          </svg>
         </div>
       </li>
     </ul>
@@ -140,22 +60,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-// const convert = require("heic-convert");
-// const { readFileSync } = expose.node;
 const expose: any = window;
 const electron = expose.electron;
-
-interface MyFile extends File {
-  path?: string;
-}
-
-interface Item {
-  src: string;
-  name: string;
-  path: string;
-}
-
-interface Items extends Array<Item> {}
 
 export default defineComponent({
   name: "DragZone",
@@ -170,6 +76,7 @@ export default defineComponent({
       isLoading: false,
       hasFiles: false,
       images: [] as Items,
+      indexItem: 0,
       isFired: false
     };
   },
@@ -189,15 +96,12 @@ export default defineComponent({
       this.isLoading = true;
       event.preventDefault();
       event.stopPropagation();
-      console.log("File(s) dropped");
-
       // Use DataTransferItemList interface to access the file(s)
       const files = event.dataTransfer.files;
       for (var i = 0; i < files.length; i++) {
         this.hasFiles = true;
         const file: MyFile = files[i];
         if (file.type === "image/heic") {
-          //this.convertToHeic(file.path);
           this.convertFile(file.path, file.name);
         } else {
           // Do something here, like error
@@ -207,41 +111,34 @@ export default defineComponent({
     },
     convertFile: function (filePath: string, fileName: string) {
       const outputFormat = this.format;
+      // Set a preview version
+      this.images.push({
+        src: "",
+        name: fileName.substring(0, 10) + "...",
+        path: ""
+      });
       electron.send("convertToHeic", { filePath, fileName, outputFormat });
       // Only the first time. I guess it could be part of Vuejs init event
       if (!this.isFired) {
         electron.on(
           "fileConverted",
           (event: any, base64: string, newPath: string) => {
-            this.isCompleted(base64, fileName, newPath);
+            this.isCompleted(base64, newPath);
           }
         );
         this.isFired = true;
       }
     },
-    isCompleted: function (base64: string, fileName: string, fullPath: string) {
-      this.images.push({ src: base64, name: fileName, path: fullPath });
+    isCompleted: function (base64: string, fullPath: string) {
+      this.images[this.indexItem].src = base64;
+      this.images[this.indexItem].path = fullPath;
       this.isLoading = false;
       this.active = false;
+      this.indexItem++;
     },
     openLink(path: string) {
       electron.send("openLink", path);
     }
-
-    // convertToHeic: async function (filePath: String) {
-    //   var start = performance.now();
-    //   const inputBuffer = readFileSync(filePath);
-    //   const outputBuffer = await convert({
-    //     buffer: inputBuffer, // the HEIC file buffer
-    //     format: "JPEG", // output format
-    //     quality: 1 // the jpeg compression quality, between 0 and 1
-    //   });
-    //   const base64 = Buffer.from(outputBuffer).toString("base64");
-    //   this.images.push("data:image/jpg;base64," + base64);
-    //   // code being timed...
-    //   var duration = performance.now() - start;
-    //   console.log(duration);
-    // },
   }
 });
 </script>
@@ -302,13 +199,14 @@ export default defineComponent({
 .list-item {
   display: flex;
   align-content: center;
-  justify-content: space-around;
+  justify-content: space-between;
   padding-bottom: 25px;
   cursor: pointer;
 
   &-img {
-    max-height: 35px;
-    max-width: 35px;
+    display: flex;
+    max-height: 45px;
+    max-width: 45px;
     img {
       width: 100%;
       height: auto;
@@ -332,7 +230,7 @@ export default defineComponent({
     display: flex;
     align-items: center;
     /* text-align: center; */
-    background: #eaebf3;
+    background: --var(brand-bg);
     box-shadow: -8px -8px 10px 0 rgb(255 255 255 / 50%),
       8px 8px 10px 0 rgb(0 39 80 / 16%);
     border-radius: 50px;
@@ -343,12 +241,21 @@ export default defineComponent({
       margin: 0 auto;
     }
   }
+  &-preview {
+    display: flex;
+    justify-content: space-between;
+    box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #fff !important;
+    background: var(--brand-bg);
+    padding: 15px 10px;
+    border-radius: 10px;
+    border: 0.0625rem solid #f3f3f3;
+    margin-bottom: 15px;
+  }
 }
 
 // Loader
 .loader {
-  margin: 0 auto;
-  margin-top: 30px;
+  margin: 30px auto;
   height: 60px;
   width: 100px;
   display: flex;

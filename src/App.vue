@@ -2,6 +2,7 @@
   <div id="app">
     <TypeSelector @update-format="updateFormat"></TypeSelector>
     <DragZone :format="format"></DragZone>
+    <Icons />
   </div>
 </template>
 
@@ -9,11 +10,13 @@
 import { defineComponent } from "vue";
 import TypeSelector from "./components/TypeSelector.vue";
 import DragZone from "./components/DragZone.vue";
+import Icons from "./components/Icons.vue";
 
 export default defineComponent({
   components: {
     TypeSelector,
-    DragZone
+    DragZone,
+    Icons
   },
   data: () => ({
     format: ""
