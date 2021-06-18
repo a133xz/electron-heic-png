@@ -50,7 +50,6 @@ ipcMain.on("convertToHeic", (event, { filePath, fileName, outputFormat }) => {
       format: outputFormat, // output format
       quality: 1 // the jpeg compression quality, between 0 and 1
     });
-    const base64 = Buffer.from(outputBuffer).toString("base64");
 
     const format = outputFormat.toLocaleLowerCase();
     const localDirectory = filePath.replace(fileName, "") + dir.replace("format", format);
@@ -62,9 +61,10 @@ ipcMain.on("convertToHeic", (event, { filePath, fileName, outputFormat }) => {
     const newFileName = fileName.replace(".heic", `.${format}`);
     const fullPath = `${localDirectory}/${newFileName}`;
 
-    await fs.writeFileSync(fullPath, outputBuffer);
-
+    const base64 = Buffer.from(outputBuffer).toString("base64");
     const base64Encoded = "data:image/jpg;base64," + base64;
+
+    await fs.writeFileSync(fullPath, outputBuffer);
 
     event.reply("fileConverted", base64Encoded, fullPath);
   })();
