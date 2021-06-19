@@ -1,93 +1,15 @@
 <template>
   <div style="display: none">
     <svg
-      id="svg-search-icon"
-      viewBox="0 0 20 20"
-      version="1.1"
+      id="svg-arrow"
+      viewBox="0 0 24 24"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-      style="width: 0; height: 0"
     >
-      <defs>
-        <path
-          d="M13.125,12.508125 L9.821875,9.1875 C11.4622067,7.20832018 11.2575238,4.28942367 9.35702986,2.55853848 C7.45653591,0.827653288 4.53126838,0.895930478 2.71359943,2.71359943 C0.895930478,4.53126838 0.827653288,7.45653591 2.55853848,9.35702986 C4.28942367,11.2575238 7.20832018,11.4622067 9.1875,9.821875 L12.508125,13.125 L13.125,12.508125 Z M2.1875,6.125 C2.1875,3.9503788 3.9503788,2.1875 6.125,2.1875 C8.2996212,2.1875 10.0625,3.9503788 10.0625,6.125 C10.0625,8.2996212 8.2996212,10.0625 6.125,10.0625 C3.9503788,10.0625 2.1875,8.2996212 2.1875,6.125 Z"
-          id="path-1"
-        ></path>
-        <filter
-          x="-50.8%"
-          y="-50.8%"
-          width="201.5%"
-          height="201.5%"
-          filterUnits="objectBoundingBox"
-          id="filter-2"
-        >
-          <feOffset
-            dx="2"
-            dy="2"
-            in="SourceAlpha"
-            result="shadowOffsetOuter1"
-          ></feOffset>
-          <feGaussianBlur
-            stdDeviation="1"
-            in="shadowOffsetOuter1"
-            result="shadowBlurOuter1"
-          ></feGaussianBlur>
-          <feColorMatrix
-            values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.1 0"
-            type="matrix"
-            in="shadowBlurOuter1"
-            result="shadowMatrixOuter1"
-          ></feColorMatrix>
-          <feOffset
-            dx="-2"
-            dy="-2"
-            in="SourceAlpha"
-            result="shadowOffsetOuter2"
-          ></feOffset>
-          <feGaussianBlur
-            stdDeviation="1"
-            in="shadowOffsetOuter2"
-            result="shadowBlurOuter2"
-          ></feGaussianBlur>
-          <feColorMatrix
-            values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.5 0"
-            type="matrix"
-            in="shadowBlurOuter2"
-            result="shadowMatrixOuter2"
-          ></feColorMatrix>
-          <feMerge>
-            <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
-            <feMergeNode in="shadowMatrixOuter2"></feMergeNode>
-          </feMerge>
-        </filter>
-      </defs>
-      <g
-        id="Symbols"
-        stroke="none"
-        stroke-width="1"
-        fill="none"
-        fill-rule="evenodd"
-      >
-        <g id="Group" transform="translate(-245.000000, 3.000000)">
-          <g id="Group-2" transform="translate(248.000000, 0.000000)">
-            <g id="Actions-/-Operations-/-search-/-24">
-              <g id="Fill">
-                <use
-                  fill="black"
-                  fill-opacity="1"
-                  filter="url(#filter-2)"
-                  xlink:href="#path-1"
-                ></use>
-                <use
-                  fill="#A9ACB0"
-                  fill-rule="evenodd"
-                  xlink:href="#path-1"
-                ></use>
-              </g>
-            </g>
-          </g>
-        </g>
-      </g>
+      <path
+        d="M21 12.2866C21 12.0749 20.912 11.888 20.7361 11.7258L14.2949 5.26806C14.1162 5.08935 13.9196 5 13.7052 5C13.4935 5 13.3175 5.0701 13.1773 5.21031C13.0371 5.35052 12.967 5.5251 12.967 5.73404C12.967 5.83851 12.9835 5.93747 13.0165 6.03093C13.0495 6.1244 13.1017 6.20413 13.1732 6.27012L15.7134 8.84744L19.2887 12.1382L19.466 11.6969L16.4722 11.5278H3.75053C3.52784 11.5278 3.34708 11.5993 3.20824 11.7423C3.06941 11.8852 3 12.0667 3 12.2866C3 12.5065 3.06941 12.688 3.20824 12.8309C3.34708 12.9739 3.52784 13.0454 3.75053 13.0454H16.4722L19.466 12.8763L19.2887 12.4433L15.7134 15.7258L13.1732 18.3031C13.1045 18.3691 13.0529 18.4488 13.0185 18.5423C12.9842 18.6357 12.967 18.7347 12.967 18.8392C12.967 19.0481 13.0371 19.2227 13.1773 19.3629C13.3175 19.5031 13.4935 19.5732 13.7052 19.5732C13.9113 19.5732 14.0955 19.4949 14.2577 19.3382L20.7361 12.8474C20.912 12.6852 21 12.4983 21 12.2866Z"
+        fill="black"
+      />
     </svg>
     <svg
       id="svg-spinner"

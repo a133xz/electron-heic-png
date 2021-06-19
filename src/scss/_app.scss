@@ -64,3 +64,9 @@ ul {
 .p-y-spacer-lg {
   @include p-y-spacer-lg;
 }
+
+.text {
+  color: var(--brand-label);
+  letter-spacing: -0.24px;
+  text-shadow: 2px 2px 2px rgb(0 0 0 / 10%);
+}

@@ -8,7 +8,7 @@
       checked
       v-model="picked"
     />
-    <label for="png">.PNG</label>
+    <label class="text" for="png">.PNG</label>
     <input
       id="jpg"
       type="radio"
@@ -16,7 +16,7 @@
       value="JPEG"
       v-model="picked"
     />
-    <label for="jpg">.JPG</label>
+    <label class="text" for="jpg">.JPG</label>
   </div>
 </template>
 
@@ -40,7 +40,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 // https://markheath.net/post/customize-radio-button-css
 .radio-toolbar {
-  box-shadow: -8px -8px 10px 0 rgba(255, 255, 255, 0.5),
+  box-shadow: -8px -8px 10px 0 rgba(255, 255, 255, 0.3),
     8px 8px 10px 0 rgba(0, 39, 80, 0.16);
   border-radius: 5px;
   display: flex;
@@ -58,11 +58,7 @@ export default defineComponent({
     border-radius: 4px;
     width: 100%;
     border: 2px solid transparent;
-    color: var(--brand-label);
-    letter-spacing: -0.24px;
     text-align: center;
-    text-shadow: 2px 2px 2px rgb(0 0 0 / 10%);
-
     &:hover {
       background-color: darken($color: #eaebf3, $amount: 1.5);
     }
@@ -83,6 +79,7 @@ export default defineComponent({
       background-repeat: no-repeat;
       background-size: 80% 5px;
       transition: background-size 0.5s ease;
+      border-bottom: 0px;
     }
   }
 }

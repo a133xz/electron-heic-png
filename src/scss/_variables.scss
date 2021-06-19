@@ -14,7 +14,7 @@ $colors: (
 
 //  Typography
 @mixin font-primary {
-  font-family: orpheuspro, $font-fallback;
+  font-family: SF Pro Text, $font-fallback;
 }
 
 @mixin font-regular {

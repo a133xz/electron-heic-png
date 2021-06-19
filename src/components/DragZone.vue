@@ -1,13 +1,15 @@
 <template>
   <div>
-    <div class="loader" v-if="isLoading">
-      <div class="left"></div>
-      <div class="right"></div>
+    <div class="progress-wrapper" v-if="isLoading">
+      <span class="text"> Loading... </span>
+      <div class="progress-bar">
+        <span class="progress-bar-fill" :style="`width: ${progress}%`"></span>
+      </div>
     </div>
     <div
       id="dragzone"
       class="area"
-      :class="{ active: active, hasFiles: hasFiles }"
+      :class="{ active: active, hasFiles: totalFiles > 0 }"
       draggable="true"
       @dragenter="dragenter"
       @dragleave="dragleave"
@@ -24,7 +26,7 @@
         @onchange="handleFiles"
       />
     </div>
-    <ul class="list">
+    <ul class="list" :class="{ opacity: isLoading }">
       <li v-for="(image, index) in images" :key="index">
         <div
           class="list-item"
@@ -42,15 +44,17 @@
           </div>
           <div class="list-item-svg">
             <svg class="svg-item" viewBox="0 0 20 20">
-              <use xlink:href="#svg-search-icon" />
+              <use xlink:href="#svg-arrow" />
             </svg>
           </div>
         </div>
         <div v-else class="list-item-preview">
           <div class="list-item-title">Converting {{ image.name }}</div>
-          <svg viewBox="0 0 20 20" style="width: 18px">
-            <use xlink:href="#svg-spinner" />
-          </svg>
+          <div class="list-item-svg">
+            <svg viewBox="0 0 20 20">
+              <use xlink:href="#svg-spinner" />
+            </svg>
+          </div>
         </div>
       </li>
     </ul>
@@ -74,17 +78,18 @@ export default defineComponent({
     return {
       active: false,
       isLoading: false,
-      hasFiles: false,
+      isFired: false,
       images: [] as Items,
+      totalFiles: 0,
       indexItem: 0,
-      isFired: false
+      progress: 0
     };
   },
   methods: {
     dragenter: function (event: DragEvent) {
       event.preventDefault();
       event.stopPropagation();
-      this.active = true;
+      this.reset();
       return false;
     },
     dragleave: function (event: DragEvent) {
@@ -98,8 +103,9 @@ export default defineComponent({
       event.stopPropagation();
       // Use DataTransferItemList interface to access the file(s)
       const files = event.dataTransfer.files;
+      this.totalFiles += files.length;
       for (var i = 0; i < files.length; i++) {
-        this.hasFiles = true;
+        console.log(this.totalFiles);
         const file: MyFile = files[i];
         if (file.type === "image/heic") {
           this.convertFile(file.path, file.name);
@@ -132,9 +138,17 @@ export default defineComponent({
     isCompleted: function (base64: string, fullPath: string) {
       this.images[this.indexItem].src = base64;
       this.images[this.indexItem].path = fullPath;
-      this.isLoading = false;
       this.active = false;
       this.indexItem++;
+      this.progress = (this.indexItem * 100) / this.totalFiles;
+
+      if (this.indexItem === this.totalFiles) {
+        this.isLoading = false;
+      }
+    },
+    reset: function () {
+      this.progress = 0;
+      this.active = true;
     },
     openLink(path: string) {
       electron.send("openLink", path);
@@ -148,8 +162,8 @@ export default defineComponent({
 .area {
   position: relative;
   border-radius: 50%;
-  width: 280px;
-  height: 280px;
+  width: 240px;
+  height: 240px;
   margin: 2rem auto;
   text-align: center;
   display: flex;
@@ -160,8 +174,8 @@ export default defineComponent({
   transition: box-shadow 0.3s ease-in;
   &.active,
   &:hover {
-    box-shadow: -8px -8px 10px 0 rgba(255, 255, 255, 0.5),
-      8px 8px 10px 0 rgba(0, 39, 80, 0.16);
+    box-shadow: -8px -8px 10px 0 rgb(228 228 228 / 50%),
+      8px 8px 10px 0 rgb(218 218 218 / 16%);
   }
   &.hasFiles {
     border-radius: 106px;
@@ -229,59 +243,51 @@ export default defineComponent({
   &-svg {
     display: flex;
     align-items: center;
-    /* text-align: center; */
-    background: --var(brand-bg);
-    box-shadow: -8px -8px 10px 0 rgb(255 255 255 / 50%),
-      8px 8px 10px 0 rgb(0 39 80 / 16%);
+    box-shadow: -4px -4px 4px 0 rgb(255 255 255 / 30%),
+      4px 4px 10px 0 rgb(0 39 80 / 16%);
     border-radius: 50px;
-    width: 30px;
-    height: 25px;
+    width: 35px;
+    height: 35px;
     align-self: center;
+    &:hover {
+      background-color: darken($color: #eaebf3, $amount: 1.5);
+    }
     svg {
       margin: 0 auto;
+      width: 18px;
     }
   }
   &-preview {
     display: flex;
     justify-content: space-between;
-    box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #fff !important;
-    background: var(--brand-bg);
-    padding: 15px 10px;
-    border-radius: 10px;
-    border: 0.0625rem solid #f3f3f3;
+    align-items: center;
     margin-bottom: 15px;
   }
 }
 
 // Loader
-.loader {
-  margin: 30px auto;
-  height: 60px;
-  width: 100px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.left,
-.right {
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  background-color: white;
-  animation: pulse 1.4s linear infinite;
-}
-.right {
-  animation-delay: 0.7s;
-}
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(0);
-    opacity: 0.1;
+.progress {
+  &-wrapper {
+    margin: 32px 0;
   }
-  50% {
-    transform: scale(1);
-    opacity: 1;
+  &-bar {
+    margin-top: 2px;
+    width: 100%;
+    background: var(--brand-bg);
+    box-shadow: inset -8px -8px 10px rgba(255, 255, 255, 0.5),
+      inset 8px 8px 10px rgba(13, 39, 80, 0.16);
+    border-radius: 3px;
+    &-fill {
+      display: block;
+      height: 12px;
+      border-radius: 3px;
+      background-color: var(--brand-selector);
+      transition: width 500ms ease-in-out;
+    }
   }
+}
+
+.opacity {
+  opacity: 0.1;
 }
 </style>
