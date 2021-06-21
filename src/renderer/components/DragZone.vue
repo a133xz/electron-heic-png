@@ -105,7 +105,6 @@ export default defineComponent({
       const files = event.dataTransfer.files;
       this.totalFiles += files.length;
       for (var i = 0; i < files.length; i++) {
-        console.log(this.totalFiles);
         const file: MyFile = files[i];
         if (file.type === "image/heic") {
           this.convertFile(file.path, file.name);

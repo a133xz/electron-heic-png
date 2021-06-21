@@ -19,7 +19,7 @@ export default defineComponent({
     Icons
   },
   data: () => ({
-    format: ""
+    format: "PNG"
   }),
   methods: {
     updateFormat(format: string) {
