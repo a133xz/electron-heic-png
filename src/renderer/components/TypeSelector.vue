@@ -65,10 +65,6 @@ export default defineComponent({
   }
 
   input[type="radio"] {
-    &:focus + label {
-      //  border: 2px dashed #444;
-    }
-
     &:checked + label {
       background-image: linear-gradient(
         to right,
