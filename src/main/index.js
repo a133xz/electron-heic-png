@@ -2,8 +2,9 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const convert = require("heic-convert");
-//const isDevelopment = process.env.NODE_ENV !== "production";
-const isDevelopment = require("electron-is-dev");
+const isProduction =
+  process.env.NODE_ENV === "production" || !process || !process.env || !process.env.NODE_ENV;
+const isDevelopment = !isProduction;
 
 // Reload
 try {

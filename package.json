@@ -24,18 +24,17 @@
     "main": false
   },
   "scripts": {
-    "serve": "yarn clean && concurrently \"cross-env BROWSER=none yarn vue:serve\" \"wait-on http://localhost:3000 && electron . \"",
+    "serve": "yarn clean && concurrently \"cross-env BROWSER=none yarn vue:serve\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron . \"",
     "build": "yarn vue:build",
     "vue:serve": "parcel ./src/renderer/index.html -p 3000 --dist-dir build/renderer",
     "vue:build": "cross-env NODE_ENV=production parcel build ./src/renderer/index.html --dist-dir build/renderer --public-url ./ --no-source-maps --no-scope-hoist",
-    "electron:build": "cross-env NODE_ENV=production electron-builder -m",
+    "electron:build": "electron-builder build",
     "build:local": "yarn clean && yarn build && yarn electron:build",
     "clean": "rm -rf build/ .cache dist/ .parcel-cache",
     "patch": "yarn changelog && npm version patch -m \"v%s\"",
     "changelog": "github_changelog_generator -u a133xz -p electron-heic-png"
   },
   "dependencies": {
-    "electron-is-dev": "^1.2.0",
     "electron-reloader": "^1.2.1",
     "heic-convert": "^1.2.4"
   },
