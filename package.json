@@ -12,19 +12,17 @@
     "vuejs",
     "heic to png"
   ],
-  "browserslist": [
-    "electron >= 9.0.4"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/a133xz/electron-heic-png.git"
   },
   "license": "MIT",
-  "main": "./src/main/index.js",
+  "browserslist": [
+    "electron >= 9.0.4"
+  ],
   "targets": {
     "main": false
   },
-  "browser": "build/renderer/index.html",
   "scripts": {
     "serve": "yarn clean && concurrently \"cross-env BROWSER=none yarn vue:serve\" \"wait-on http://localhost:3000 && electron . \"",
     "build": "yarn vue:build",
@@ -64,6 +62,7 @@
     "typescript": "^4.3.2",
     "wait-on": "^5.0.0"
   },
+  "main": "./src/main/index.js",
   "build": {
     "appId": "com.electron.electron-vuejs-parcel",
     "productName": "heic-converter",
