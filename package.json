@@ -27,7 +27,7 @@
     "serve": "yarn clean && concurrently \"cross-env BROWSER=none yarn vue:serve\" \"wait-on http://localhost:3000 && electron . \"",
     "build": "yarn vue:build",
     "vue:serve": "parcel ./src/renderer/index.html -p 3000 --dist-dir build/renderer",
-    "vue:build": "parcel build ./src/renderer/index.html --dist-dir build/renderer --public-url ./ --no-source-maps --no-scope-hoist",
+    "vue:build": "cross-env NODE_ENV=production parcel build ./src/renderer/index.html --dist-dir build/renderer --public-url ./ --no-source-maps --no-scope-hoist",
     "electron:build": "electron-builder -m",
     "build:local": "yarn clean && yarn build && yarn electron:build",
     "clean": "rm -rf build/ .cache dist/ .parcel-cache",
