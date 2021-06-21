@@ -1,7 +1,7 @@
 {
   "name": "electron-heic-png",
   "description": "Electron program to convert HEIC to PNG/JPG",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "Antonio R"
   },
