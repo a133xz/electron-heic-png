@@ -11,10 +11,9 @@ try {
   require("electron-reloader")(module);
 } catch (_) {}
 
-let mainWindow;
-
-function createWindow() {
-  mainWindow = new BrowserWindow({
+async function createWindow() {
+  // Create the browser window.
+  const win = new BrowserWindow({
     titleBarStyle: "hiddenInset",
     width: 360,
     height: 450,
@@ -27,12 +26,14 @@ function createWindow() {
     }
   });
 
-  mainWindow.loadURL(
+  // Load the url of the dev server if in development mode
+  // Load the index.html when not in development
+  win.loadURL(
     isDevelopment
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../renderer/index.html")}`
   );
-  mainWindow.on("closed", () => (mainWindow = null));
+  win.on("closed", () => (mainWindow = null));
 }
 
 app.on("ready", createWindow);
