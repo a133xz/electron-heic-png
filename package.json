@@ -28,7 +28,7 @@
     "build": "yarn vue:build",
     "vue:serve": "parcel ./src/renderer/index.html -p 3000 --dist-dir build/renderer",
     "vue:build": "cross-env NODE_ENV=production parcel build ./src/renderer/index.html --dist-dir build/renderer --public-url ./ --no-source-maps --no-scope-hoist",
-    "electron:build": "electron-builder -m",
+    "electron:build": "cross-env NODE_ENV=production electron-builder -m",
     "build:local": "yarn clean && yarn build && yarn electron:build",
     "clean": "rm -rf build/ .cache dist/ .parcel-cache",
     "patch": "yarn changelog && npm version patch -m \"v%s\"",
@@ -66,6 +66,7 @@
   "build": {
     "appId": "com.electron.electron-vuejs-parcel",
     "productName": "heic-converter",
+    "compression": "maximum",
     "files": [
       "src/main/**/*",
       "node_modules/**/*",
@@ -74,24 +75,10 @@
         "to": "src/renderer"
       }
     ],
-    "dmg": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
-    },
     "mac": {
       "icon": "src/renderer/icons/icon.icns",
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "target": "dir"
     }
   },
   "homepage": "./"
