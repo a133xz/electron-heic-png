@@ -1,6 +1,6 @@
 {
   "name": "electron-heic-png",
-  "description": "Electron program to convert HEIC to PNG",
+  "description": "Electron program to convert HEIC to PNG/JPG",
   "version": "1.0.1",
   "author": {
     "name": "Antonio R"
@@ -20,29 +20,38 @@
     "url": "https://github.com/a133xz/electron-heic-png.git"
   },
   "license": "MIT",
-  "main": "src/electron.js",
+  "targets": {
+    "main": {
+      "engines": {
+        "electron": ">=2.x",
+        "browsers": [
+          "> 1%",
+          "not dead"
+        ]
+      }
+    }
+  },
   "scripts": {
-    "vue-serve": "parcel ./src/index.html -p 3000 --dist-dir build",
-    "vue-build": "parcel ./src/index.html --dist-dir build --public-url ./",
-    "serve": "yarn clean-build && concurrently \"cross-env BROWSER=none yarn vue-serve\" \"wait-on http://localhost:3000 && electron . \"",
-    "clean-build": "rm -rf build/ .cache dist/",
-    "electron-build": "electron-builder -m",
-    "build:local": "yarn clean-build && yarn vue-build && yarn electron-build",
-    "build": "yarn vue-build",
+    "serve": "yarn clean && concurrently \"cross-env BROWSER=none yarn vue:serve\" \"wait-on http://localhost:3000 && electron ./src/main \"",
+    "build": "yarn vue:build",
+    "vue:serve": "parcel ./src/renderer/index.html -p 3000 --dist-dir build/renderer",
+    "vue:build": "parcel build ./src/renderer/index.html --dist-dir build/renderer --public-url ./ --no-source-maps --no-scope-hoist",
+    "electron:build": "electron-builder -m",
+    "build:local": "yarn clean && yarn build && yarn electron:build",
+    "clean": "rm -rf build/ .cache dist/ .parcel-cache",
     "patch": "yarn changelog && npm version patch -m \"v%s\"",
     "changelog": "github_changelog_generator -u a133xz -p electron-heic-png"
   },
   "dependencies": {
-    "detect-character-encoding": "^0.8.0",
     "electron-is-dev": "^1.2.0",
     "electron-reloader": "^1.2.1",
     "heic-convert": "^1.2.4",
-    "parcel": "^2.0.0-beta.3.1",
+    "parcel": "2.0.0-beta.3.1",
     "vue": "^3.0.0"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "2.0.0-nightly.724",
-    "@parcel/transformer-vue": "2.0.0-nightly.2346",
+    "@parcel/transformer-sass": "2.0.0-beta.3.1",
+    "@parcel/transformer-vue": "2.0.0-beta.3.1",
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "@vue/eslint-config-typescript": "^5.0.2",
@@ -61,13 +70,18 @@
     "typescript": "^4.3.2",
     "wait-on": "^5.0.0"
   },
+  "main": "./src/main/index.js",
   "build": {
     "appId": "com.electron.electron-vuejs-parcel",
-    "productName": "MyApp",
+    "productName": "heic-converter",
     "files": [
-      "src/electron.js",
-      "src/assets/*",
-      "build/**/*"
+      "src/main/**/*",
+      "node_modules/**/*",
+      "package.json",
+      {
+        "from": "build/renderer",
+        "to": "src/renderer"
+      }
     ],
     "dmg": {
       "contents": [
@@ -85,20 +99,9 @@
       ]
     },
     "mac": {
-      "icon": "src/icons/icon.icns"
-    },
-    "win": {
-      "icon": "src/icons/icon.ico"
-    },
-    "linux": {
-      "icon": "src/icons"
+      "icon": "src/renderer/icons/icon.icns",
+      "category": "public.app-category.productivity"
     }
   },
-  "bundlesize": [
-    {
-      "path": "./build/src.*.js",
-      "maxSize": "250 kB"
-    }
-  ],
   "homepage": "./"
 }

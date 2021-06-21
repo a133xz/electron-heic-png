@@ -1,7 +1,5 @@
-const fs = require("fs");
-const { contextBridge, ipcRenderer } = require("electron");
-
 process.once("loaded", () => {
+  const fs = require("fs");
   const { contextBridge, ipcRenderer, shell } = require("electron");
 
   contextBridge.exposeInMainWorld("node", {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
@@ -19,7 +18,7 @@ function createWindow() {
   });
 
   mainWindow.loadURL(
-    isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../build/index.html")}`
+    isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../renderer/index.html")}`
   );
   mainWindow.on("closed", () => (mainWindow = null));
 }

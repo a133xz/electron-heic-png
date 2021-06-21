@@ -8,7 +8,7 @@ Make sure you have Yarn installed and clone the repository `git clone https://gi
 
 - `yarn` to install dependencies
 - `yarn serve` to run locally Vue.js + electron
-- `yarn vue-serve` to run locally only Vue.js
+- `yarn vue:serve` to run locally only Vue.js
 - `yarn build:local` to build the project locally
 - `yarn patch` to add a patch version and push the changes
 
