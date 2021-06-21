@@ -20,19 +20,13 @@
     "url": "https://github.com/a133xz/electron-heic-png.git"
   },
   "license": "MIT",
+  "main": "./src/main/index.js",
   "targets": {
-    "main": {
-      "engines": {
-        "electron": ">=2.x",
-        "browsers": [
-          "> 1%",
-          "not dead"
-        ]
-      }
-    }
+    "main": false
   },
+  "browser": "build/renderer/index.html",
   "scripts": {
-    "serve": "yarn clean && concurrently \"cross-env BROWSER=none yarn vue:serve\" \"wait-on http://localhost:3000 && electron ./src/main \"",
+    "serve": "yarn clean && concurrently \"cross-env BROWSER=none yarn vue:serve\" \"wait-on http://localhost:3000 && electron . \"",
     "build": "yarn vue:build",
     "vue:serve": "parcel ./src/renderer/index.html -p 3000 --dist-dir build/renderer",
     "vue:build": "parcel build ./src/renderer/index.html --dist-dir build/renderer --public-url ./ --no-source-maps --no-scope-hoist",
@@ -70,14 +64,12 @@
     "typescript": "^4.3.2",
     "wait-on": "^5.0.0"
   },
-  "main": "./src/main/index.js",
   "build": {
     "appId": "com.electron.electron-vuejs-parcel",
     "productName": "heic-converter",
     "files": [
       "src/main/**/*",
       "node_modules/**/*",
-      "package.json",
       {
         "from": "build/renderer",
         "to": "src/renderer"
