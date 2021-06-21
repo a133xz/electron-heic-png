@@ -1,7 +1,7 @@
-process.once("loaded", () => {
-  const fs = require("fs");
-  const { contextBridge, ipcRenderer, shell } = require("electron");
+const fs = require("fs");
+const { contextBridge, ipcRenderer, shell } = require("electron");
 
+process.once("loaded", () => {
   contextBridge.exposeInMainWorld("node", {
     readdirSync: fs.readdirSync,
     readFileSync: fs.readFileSync
