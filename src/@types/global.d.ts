@@ -6,6 +6,7 @@ interface Item {
   src: string;
   name: string;
   path: string;
+  error?: boolean;
 }
 
 interface Items extends Array<Item> {}

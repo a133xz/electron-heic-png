@@ -49,10 +49,15 @@
           </div>
         </div>
         <div v-else class="list-item-preview">
-          <div class="list-item-title">Converting {{ image.name }}</div>
+          <div class="list-item-title" :class="{ isError: image.error }">
+            <span v-if="!image.error">Converting... </span> {{ image.name }}
+          </div>
           <div class="list-item-svg">
-            <svg viewBox="0 0 20 20">
+            <svg viewBox="0 0 20 20" v-if="!image.error">
               <use xlink:href="#svg-spinner" />
+            </svg>
+            <svg viewBox="0 0 20 20" v-else>
+              <use xlink:href="#svg-error" />
             </svg>
           </div>
         </div>
@@ -109,7 +114,7 @@ export default defineComponent({
         if (file.type === "image/heic") {
           this.convertFile(file.path, file.name);
         } else {
-          // Do something here, like error
+          this.errorFile();
         }
       }
       return false;
@@ -148,6 +153,17 @@ export default defineComponent({
     reset: function () {
       this.progress = 0;
       this.active = true;
+    },
+    errorFile() {
+      this.images.push({
+        src: "",
+        name: "This file format is not supported",
+        path: "",
+        error: true
+      });
+      this.isLoading = false;
+      this.active = false;
+      this.indexItem++;
     },
     openLink(path: string) {
       electron.send("openLink", path);
@@ -288,5 +304,9 @@ export default defineComponent({
 
 .opacity {
   opacity: 0.1;
+}
+
+.isError {
+  color: red;
 }
 </style>
