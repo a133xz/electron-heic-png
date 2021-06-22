@@ -112,11 +112,7 @@ ipcMain.on("convertToHeic", (event, { filePath, fileName, outputFormat }) => {
   })();
 });
 
-ipcMain.on("openLink", (event, path) => {
-  shell.showItemInFolder(path);
-});
-
-ipcMain.on("formatError", () => {
+ipcMain.on("showFormatError", () => {
   dialog.showMessageBoxSync({
     type: "error",
     message: "Only HEIC allowed"

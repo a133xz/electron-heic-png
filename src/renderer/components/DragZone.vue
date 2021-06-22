@@ -162,15 +162,15 @@ export default defineComponent({
       this.active = true;
     },
     errorFile() {
-      electron.send("formatError");
+      electron.send("showFormatError");
       this.totalFiles += -1;
       if (this.indexItem === this.totalFiles) {
         this.active = false;
         this.isLoading = false;
       }
     },
-    openLink(path: string) {
-      electron.send("openLink", path);
+    async openLink(path: string) {
+      await electron.showItemInFolder(path);
     }
   }
 });
