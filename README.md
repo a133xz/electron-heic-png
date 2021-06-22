@@ -1,6 +1,7 @@
 # Overview
 
 To-do
+target
 
 ## 💻 Scripts
 
@@ -20,3 +21,5 @@ Issues and PRs are much appreciated. Please create a new branch and a PR to subm
 
 - [action-electron-builder](https://github.com/samuelmeuli/action-electron-builder)
 - [Electron-vue](https://github.com/SimulatedGREG/electron-vue)
+  https://github.com/nklayman/vue-cli-plugin-electron-builder
+  https://github.com/stefansl/image-shrinker
