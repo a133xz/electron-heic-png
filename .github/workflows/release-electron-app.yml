@@ -13,7 +13,7 @@ jobs:
       matrix:
         os: [macos-latest]
         # Lets use the preinstalled node version (much faster)
-        node-version: [12.x]
+        node-version: [14.x]
 
     env:
       ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
