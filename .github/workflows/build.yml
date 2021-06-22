@@ -1,63 +1,31 @@
-name: Build/build
+name: Build/release
 
-on: [pull_request]
+on: push
 
 jobs:
-  test:
+  release:
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [macos-latest]
-        # Lets use the preinstalled node version (much faster)
-        node-version: [12.x]
-
-    env:
-      ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
-      ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.cache/electron-builder
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 10
 
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache Node.js modules
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Cache Electron
-        uses: actions/cache@v1
-        with:
-          path: ${{ github.workspace }}/.cache/electron
-          key: ${{ runner.os }}-electron-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-          restore-keys: |
-            ${{ runner.os }}-electron-cache-
-
-      - name: Cache Electron-Builder
-        uses: actions/cache@v1
-        with:
-          path: ${{ github.workspace }}/.cache/electron-builder
-          key: ${{ runner.os }}-electron-builder-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-          restore-keys: |
-            ${{ runner.os }}-electron-builder-cache-
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build Electron app
+      - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
-          release: false
+
+          # If the commit is tagged with a version (e.g. "v1.0.0"),
+          # release the app after building
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
