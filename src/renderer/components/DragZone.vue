@@ -22,8 +22,8 @@
         class="input"
         type="file"
         multiple
-        accept="image/*"
-        @onchange="handleFiles"
+        accept="*"
+        @change="onChangeInput"
       />
     </div>
     <ul class="list" :class="{ opacity: isLoading }">
@@ -99,12 +99,23 @@ export default defineComponent({
       event.preventDefault();
       this.active = !this.active;
     },
+    onChangeInput: function (event: Event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const files: FileList = <FileList>(<HTMLInputElement>event.target).files;
+      this.loopFiles(files);
+      return false;
+    },
     drop: function (event: DragEvent) {
       this.isLoading = true;
       event.preventDefault();
       event.stopPropagation();
       // Use DataTransferItemList interface to access the file(s)
       const files = event.dataTransfer.files;
+      this.loopFiles(files);
+      return false;
+    },
+    loopFiles: function (files: FileList) {
       this.totalFiles += files.length;
       for (var i = 0; i < files.length; i++) {
         const file: MyFile = files[i];
@@ -114,7 +125,6 @@ export default defineComponent({
           this.errorFile();
         }
       }
-      return false;
     },
     convertFile: function (filePath: string, fileName: string) {
       const outputFormat = this.format;
