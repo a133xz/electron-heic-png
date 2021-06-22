@@ -32,6 +32,7 @@
     "build:local": "yarn clean && yarn build && yarn electron:build",
     "clean": "rm -rf build/ .cache dist/ .parcel-cache",
     "patch": "npm version patch -m \"v%s\"",
+    "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
     "postversion": "git push && git push --tags",
     "changelog": "github_changelog_generator -u a133xz -p electron-heic-png"
   },
@@ -66,7 +67,7 @@
   "build": {
     "appId": "com.electron.electron-vuejs-parcel",
     "productName": "heic-converter",
-    "compression": "maximum",
+    "compression": "store",
     "files": [
       "src/main/**/*",
       "node_modules/**/*",
@@ -78,10 +79,7 @@
     "mac": {
       "icon": "src/renderer/icons/icon.icns",
       "category": "public.app-category.productivity",
-      "target": "dir",
-      "type": "distribution",
-      "identity": null,
-      "hardenedRuntime": true
+      "identity": null
     },
     "dmg": {
       "contents": [
