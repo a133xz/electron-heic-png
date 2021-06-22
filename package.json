@@ -32,6 +32,7 @@
     "build:local": "yarn clean && yarn build && yarn electron:build",
     "clean": "rm -rf build/ .cache dist/ .parcel-cache",
     "patch": "yarn changelog && npm version patch -m \"v%s\"",
+    "postversion": "git push && git push --tags",
     "changelog": "github_changelog_generator -u a133xz -p electron-heic-png"
   },
   "dependencies": {
