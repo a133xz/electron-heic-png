@@ -67,7 +67,7 @@
   "build": {
     "appId": "com.electron.electron-vuejs-parcel",
     "productName": "heic-converter",
-    "compression": "store",
+    "compression": "maximum",
     "files": [
       "src/main/**/*",
       "node_modules/**/*",
