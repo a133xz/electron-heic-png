@@ -28,7 +28,7 @@
     "build": "yarn vue:build",
     "vue:serve": "parcel ./src/renderer/index.html -p 3000 --dist-dir build/renderer",
     "vue:build": "cross-env NODE_ENV=production parcel build ./src/renderer/index.html --dist-dir build/renderer --public-url ./ --no-source-maps --no-scope-hoist",
-    "electron:build": "electron-builder build",
+    "electron:build": "electron-builder build -c.mac.target=dir",
     "build:local": "yarn clean && yarn build && yarn electron:build",
     "clean": "rm -rf build/ .cache dist/ .parcel-cache",
     "patch": "npm version patch -m \"v%s\"",
