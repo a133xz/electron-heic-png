@@ -52,12 +52,9 @@
           <div class="list-item-title" :class="{ isError: image.error }">
             <span v-if="!image.error">Converting... </span> {{ image.name }}
           </div>
-          <div class="list-item-svg">
-            <svg viewBox="0 0 20 20" v-if="!image.error">
+          <div class="list-item-svg" v-if="!image.error">
+            <svg viewBox="0 0 20 20">
               <use xlink:href="#svg-spinner" />
-            </svg>
-            <svg viewBox="0 0 20 20" v-else>
-              <use xlink:href="#svg-error" />
             </svg>
           </div>
         </div>
@@ -155,15 +152,12 @@ export default defineComponent({
       this.active = true;
     },
     errorFile() {
-      this.images.push({
-        src: "",
-        name: "This file format is not supported",
-        path: "",
-        error: true
-      });
-      this.isLoading = false;
-      this.active = false;
-      this.indexItem++;
+      electron.send("formatError");
+      this.totalFiles += -1;
+      if (this.indexItem === this.totalFiles) {
+        this.active = false;
+        this.isLoading = false;
+      }
     },
     openLink(path: string) {
       electron.send("openLink", path);
@@ -187,8 +181,7 @@ export default defineComponent({
   box-shadow: inset -8px -8px 10px 0 rgba(255, 255, 255, 0.5),
     inset 8px 8px 10px 0 rgba(13, 39, 80, 0.16);
   transition: box-shadow 0.3s ease-in;
-  &.active,
-  &:hover {
+  &.active {
     box-shadow: -8px -8px 10px 0 rgb(228 228 228 / 50%),
       8px 8px 10px 0 rgb(218 218 218 / 16%);
   }
@@ -307,6 +300,7 @@ export default defineComponent({
 }
 
 .isError {
-  color: red;
+  text-align: center;
+  color: #e24640;
 }
 </style>
