@@ -84,14 +84,26 @@ export default defineComponent({
       images: [] as Items,
       totalFiles: 0,
       indexItem: 0,
-      progress: 0
+      progress: 0,
+      resolvePromise: null as any
     };
+  },
+  mounted() {
+    electron.on(
+      "fileConverted",
+      (event: any, base64: string, newPath: string) => {
+        this.isConverted(base64, newPath);
+      }
+    );
+    electron.on("isError", () => {
+      this.isError(true);
+    });
   },
   computed: {
     hasFiles(): boolean {
       return this.totalFiles > 0;
     },
-    iterationCompleted(): boolean {
+    loopCompleted(): boolean {
       return this.indexItem === this.totalFiles;
     }
   },
@@ -124,60 +136,54 @@ export default defineComponent({
       this.loopFiles(files);
       return false;
     },
-    loopFiles: function (files: FileList) {
+    async loopFiles(files: FileList) {
       this.totalFiles += files.length;
       for (var i = 0; i < files.length; i++) {
         const file: MyFile = files[i];
-        if (file.type === "image/heic") {
-          this.convertFile(file.path, file.name);
-        } else {
+        await this.convertFile(file);
+      }
+    },
+    convertFile(file: MyFile) {
+      return new Promise((resolve, reject) => {
+        if (file.type !== "image/heic") {
           this.fileTypeError();
+          return resolve("Error");
         }
-      }
-    },
-    convertFile: function (filePath: string, fileName: string) {
-      const outputFormat = this.format;
-      // Set a preview version
-      this.images.push({
-        src: "",
-        name: fileName.substring(0, 10) + "...",
-        path: ""
-      });
-      electron.send("convertToHeic", { filePath, fileName, outputFormat });
-      // Only the first time. I guess it could be part of Vuejs init event
-      if (!this.isFired) {
-        electron.on(
-          "fileConverted",
-          (event: any, base64: string, newPath: string) => {
-            this.isConverted(base64, newPath);
-          }
-        );
-        electron.on("isError", () => {
-          this.isError(true);
+        this.resolvePromise = resolve;
+        const fileName = file.name;
+        const filePath = file.path;
+        // Set a preview version
+        this.images.push({
+          src: "",
+          name: fileName.substring(0, 10) + "...",
+          path: ""
         });
-        this.isFired = true;
-      }
+        const outputFormat = this.format;
+        electron.send("convertToHeic", { filePath, fileName, outputFormat });
+      });
     },
-    resetOnComplete() {
-      if (this.iterationCompleted) {
-        this.reset();
-      }
+    setProgressAndResolve() {
+      this.indexItem++;
+      this.progress = (this.indexItem * 100) / this.totalFiles;
+      this.resolvePromise();
     },
     isConverted: function (base64: string, fullPath: string) {
       this.images[this.indexItem].src = base64;
       this.images[this.indexItem].path = fullPath;
-      this.indexItem++;
-      this.progress = (this.indexItem * 100) / this.totalFiles;
+      this.setProgressAndResolve();
       this.resetOnComplete();
     },
     isError(backendError?: boolean) {
       if (backendError) {
         this.images[this.indexItem].error = true;
-        this.indexItem++;
+        this.setProgressAndResolve();
       } else {
         this.totalFiles += -1;
       }
       this.resetOnComplete();
+    },
+    resetOnComplete() {
+      this.loopCompleted && this.reset();
     },
     reset() {
       this.isLoading = false;
