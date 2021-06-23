@@ -9,7 +9,7 @@
     <div
       id="dragzone"
       class="area"
-      :class="{ active: active, hasFiles: totalFiles > 0 }"
+      :class="{ active: active, hasFiles: hasFiles }"
       draggable="true"
       @dragenter="dragenter"
       @dragleave="dragleave"
@@ -48,11 +48,11 @@
             </svg>
           </div>
         </div>
-        <div v-else class="list-item-preview">
-          <div class="list-item-title" :class="{ isError: image.error }">
-            <span v-if="!image.error">Converting... </span> {{ image.name }}
+        <div v-if="!image.path && !image.error" class="list-item-preview">
+          <div class="list-item-title">
+            <span>Converting... </span> {{ image.name }}
           </div>
-          <div class="list-item-svg" v-if="!image.error">
+          <div class="list-item-svg">
             <svg viewBox="0 0 20 20">
               <use xlink:href="#svg-spinner" />
             </svg>
@@ -87,17 +87,26 @@ export default defineComponent({
       progress: 0
     };
   },
+  computed: {
+    hasFiles(): boolean {
+      return this.totalFiles > 0;
+    },
+    iterationCompleted(): boolean {
+      return this.indexItem === this.totalFiles;
+    }
+  },
   methods: {
     dragenter: function (event: DragEvent) {
       event.preventDefault();
       event.stopPropagation();
-      this.reset();
+      this.active = true;
       return false;
     },
     dragleave: function (event: DragEvent) {
       event.stopPropagation();
       event.preventDefault();
-      this.active = !this.active;
+      this.active = false;
+      return false;
     },
     onChangeInput: function (event: Event) {
       event.preventDefault();
@@ -122,7 +131,7 @@ export default defineComponent({
         if (file.type === "image/heic") {
           this.convertFile(file.path, file.name);
         } else {
-          this.errorFile();
+          this.fileTypeError();
         }
       }
     },
@@ -140,34 +149,44 @@ export default defineComponent({
         electron.on(
           "fileConverted",
           (event: any, base64: string, newPath: string) => {
-            this.isCompleted(base64, newPath);
+            this.isConverted(base64, newPath);
           }
         );
+        electron.on("isError", () => {
+          this.isError(true);
+        });
         this.isFired = true;
       }
     },
-    isCompleted: function (base64: string, fullPath: string) {
+    resetOnComplete() {
+      if (this.iterationCompleted) {
+        this.reset();
+      }
+    },
+    isConverted: function (base64: string, fullPath: string) {
       this.images[this.indexItem].src = base64;
       this.images[this.indexItem].path = fullPath;
-      this.active = false;
       this.indexItem++;
       this.progress = (this.indexItem * 100) / this.totalFiles;
-
-      if (this.indexItem === this.totalFiles) {
-        this.isLoading = false;
-      }
+      this.resetOnComplete();
     },
-    reset: function () {
+    isError(backendError?: boolean) {
+      if (backendError) {
+        this.images[this.indexItem].error = true;
+        this.indexItem++;
+      } else {
+        this.totalFiles += -1;
+      }
+      this.resetOnComplete();
+    },
+    reset() {
+      this.isLoading = false;
+      this.active = false;
       this.progress = 0;
-      this.active = true;
     },
-    errorFile() {
-      electron.send("showFormatError");
-      this.totalFiles += -1;
-      if (this.indexItem === this.totalFiles) {
-        this.active = false;
-        this.isLoading = false;
-      }
+    fileTypeError() {
+      electron.send("showFileTypeError");
+      this.isError();
     },
     async openLink(path: string) {
       await electron.showItemInFolder(path);
@@ -307,10 +326,5 @@ export default defineComponent({
 
 .opacity {
   opacity: 0.1;
-}
-
-.isError {
-  text-align: center;
-  color: #e24640;
 }
 </style>

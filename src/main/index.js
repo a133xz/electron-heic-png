@@ -109,10 +109,17 @@ ipcMain.on("convertToHeic", (event, { filePath, fileName, outputFormat }) => {
     await fs.writeFileSync(absolutePath, outputBuffer);
 
     event.reply("fileConverted", base64Encoded, absolutePath);
-  })();
+  })().catch((e) => {
+    console.error(e.message);
+    dialog.showMessageBoxSync({
+      type: "error",
+      message: "Error converting the file"
+    });
+    event.reply("isError");
+  });
 });
 
-ipcMain.on("showFormatError", () => {
+ipcMain.on("showFileTypeError", () => {
   dialog.showMessageBoxSync({
     type: "error",
     message: "Only HEIC allowed"

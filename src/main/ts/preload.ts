@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer, shell, dialog } from "electron";
+import { contextBridge, ipcRenderer, shell } from "electron";
 
 process.once("loaded", () => {
   contextBridge.exposeInMainWorld("electron", {
@@ -11,13 +11,6 @@ process.once("loaded", () => {
 
     async showItemInFolder(url: string) {
       await shell.showItemInFolder(url);
-    },
-
-    showFormatError: () => {
-      dialog.showMessageBoxSync({
-        type: "error",
-        message: "Only HEIC allowed"
-      });
     }
   });
 });
