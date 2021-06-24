@@ -40,7 +40,7 @@
             <div class="list-item-title">
               {{ image.name }} converted to .PNG
             </div>
-            <div class="list-item-subtitle">Open folder</div>
+            <div class="list-item-subtitle">Open file</div>
           </div>
           <div class="list-item-svg">
             <svg class="svg-item" viewBox="0 0 20 20">
@@ -152,10 +152,12 @@ export default defineComponent({
         this.resolvePromise = resolve;
         const fileName = file.name;
         const filePath = file.path;
+        const shortenFileName =
+          fileName.length > 10 ? fileName.substring(0, 10) + "..." : fileName;
         // Set a preview version
         this.images.push({
           src: "",
-          name: fileName.substring(0, 10) + "...",
+          name: shortenFileName,
           path: ""
         });
         const outputFormat = this.format;

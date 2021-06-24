@@ -68,7 +68,7 @@
   "main": "./src/main/index.js",
   "build": {
     "appId": "com.electron.electron-vuejs-parcel",
-    "productName": "heic-converter",
+    "productName": "HEIC Converter",
     "compression": "maximum",
     "files": [
       "src/main/**/*",
