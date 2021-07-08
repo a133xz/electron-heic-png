@@ -94,6 +94,10 @@
       "category": "public.app-category.productivity",
       "identity": null
     },
+    "win": {
+      "icon": "src/renderer/icons/icon.png",
+      "target": "portable"
+    },
     "dmg": {
       "contents": [
         {
