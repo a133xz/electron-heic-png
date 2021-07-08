@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-latest, windows-latest]
         # Lets use the preinstalled node version (much faster)
         node-version: [14.x]
 
