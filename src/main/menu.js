@@ -29,3 +29,5 @@ if (process.platform === "darwin") {
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 }
+
+// pretty much using https://github.com/stefansl/image-shrinker/blob/master/menu/mainmenu.js
