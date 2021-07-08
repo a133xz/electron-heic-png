@@ -1,5 +1,13 @@
 # Changelog
 
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+# Changelog
+
+## [v1.0.6](https://github.com/a133xz/electron-heic-png/tree/v1.0.6) (2021-06-23)
+
+[Full Changelog](https://github.com/a133xz/electron-heic-png/compare/v1.0.5...v1.0.6)
+
 ## [v1.0.5](https://github.com/a133xz/electron-heic-png/tree/v1.0.5) (2021-06-22)
 
 [Full Changelog](https://github.com/a133xz/electron-heic-png/compare/v1.0.4...v1.0.5)
