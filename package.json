@@ -36,13 +36,11 @@
     "patch": "npm version patch -m \"v%s\"",
     "postversion": "git push && git push --tags",
     "prepare": "husky install",
-    "release": "standard-version",
     "release:patch": "standard-version --release-as patch"
   },
   "standard-version": {
     "skip": {
       "bump": true,
-      "commit": true,
       "tag": true
     }
   },
