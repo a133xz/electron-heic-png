@@ -1,5 +1,5 @@
 interface MyFile extends File {
-  path: string;
+  path?: string;
 }
 
 interface Item {

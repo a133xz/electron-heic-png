@@ -137,7 +137,8 @@ export default defineComponent({
       return false;
     },
     async loopFiles(files: FileList) {
-      this.totalFiles += files.length;
+      this.totalFiles = files.length;
+
       for (var i = 0; i < files.length; i++) {
         const file: MyFile = files[i];
         await this.convertFile(file);
@@ -145,7 +146,10 @@ export default defineComponent({
     },
     convertFile(file: MyFile) {
       return new Promise((resolve, reject) => {
-        if (file.type !== "image/heic") {
+        if (
+          (file.type && file.type !== "image/heic") ||
+          !/\.heic$/i.test(file.name)
+        ) {
           this.fileTypeError();
           return resolve("Error");
         }
@@ -160,24 +164,28 @@ export default defineComponent({
           name: shortenFileName,
           path: ""
         });
+
+        // Send to Electron
         const outputFormat = this.format;
         electron.send("convertToHeic", { filePath, fileName, outputFormat });
       });
+    },
+    isConverted: function (base64: string, fullPath: string) {
+      const arrPosition = this.images.length - 1;
+      this.images[arrPosition].src = base64;
+      this.images[arrPosition].path = fullPath;
+      this.setProgressAndResolve();
+      this.resetOnComplete();
     },
     setProgressAndResolve() {
       this.indexItem++;
       this.progress = (this.indexItem * 100) / this.totalFiles;
       this.resolvePromise();
     },
-    isConverted: function (base64: string, fullPath: string) {
-      this.images[this.indexItem].src = base64;
-      this.images[this.indexItem].path = fullPath;
-      this.setProgressAndResolve();
-      this.resetOnComplete();
-    },
     isError(backendError?: boolean) {
       if (backendError) {
-        this.images[this.indexItem].error = true;
+        const arrPosition = this.images.length - 1;
+        this.images[arrPosition].error = true;
         this.setProgressAndResolve();
       } else {
         this.totalFiles += -1;
@@ -191,6 +199,7 @@ export default defineComponent({
       this.isLoading = false;
       this.active = false;
       this.progress = 0;
+      this.indexItem = 0;
     },
     fileTypeError() {
       electron.send("showFileTypeError");
