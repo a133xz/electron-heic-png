@@ -42,7 +42,8 @@ async function createWindow() {
       //log.error(error);
     });
 
-  //win.on("closed", () => (win = null));
+  // Menu
+  require("./menu");
 }
 
 // Quit when all windows are closed.
