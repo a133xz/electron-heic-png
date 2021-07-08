@@ -39,6 +39,13 @@
     "release": "standard-version",
     "release:patch": "standard-version --release-as patch"
   },
+  "standard-version": {
+    "skip": {
+      "bump": true,
+      "commit": true,
+      "tag": true
+    }
+  },
   "dependencies": {
     "electron-reloader": "^1.2.1",
     "heic-convert": "^1.2.4"
