@@ -38,7 +38,7 @@
           </div>
           <div class="list-item-text">
             <div class="list-item-title">
-              {{ image.name }} converted to .PNG
+              {{ image.name }} converted to .{{ image.format }}
             </div>
             <div class="list-item-subtitle">Open file</div>
           </div>
@@ -151,23 +151,26 @@ export default defineComponent({
           !/\.heic$/i.test(file.name)
         ) {
           this.fileTypeError();
-          return resolve("Error");
+          return reject("Error");
         }
         this.resolvePromise = resolve;
+
         const fileName = file.name;
         const filePath = file.path;
         const shortenFileName =
           fileName.length > 10 ? fileName.substring(0, 10) + "..." : fileName;
+        const outputFormat = this.format;
+
         // Set a preview version
         this.images.push({
           src: "",
           name: shortenFileName,
-          path: ""
+          path: "",
+          format: outputFormat
         });
 
         // Send to Electron
-        const outputFormat = this.format;
-        electron.send("convertToHeic", { filePath, fileName, outputFormat });
+        electron.send("convertToHeic", { filePath, outputFormat });
       });
     },
     isConverted: function (base64: string, fullPath: string) {
