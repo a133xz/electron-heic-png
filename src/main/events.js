@@ -1,9 +1,11 @@
 const { ipcMain, dialog } = require("electron");
 const fs = require("fs");
+const path = require("path");
+
 const convert = require("heic-convert");
 
 // Events
-ipcMain.on("convertToHeic", (event, { filePath, fileName, outputFormat }) => {
+ipcMain.on("convertToHeic", (event, { filePath, outputFormat }) => {
   (async () => {
     const inputBuffer = fs.readFileSync(filePath);
     const outputBuffer = await convert({
@@ -12,17 +14,19 @@ ipcMain.on("convertToHeic", (event, { filePath, fileName, outputFormat }) => {
       quality: 1 // the jpeg compression quality, between 0 and 1
     });
 
-    const format = outputFormat.toLocaleLowerCase();
-    const currentDirectory = filePath.replace(fileName, "");
-    const picturesFolder = currentDirectory + format + "-pictures";
+    const file = path.parse(filePath);
+    const fileName = file.name;
+    const currentDirectory = file.dir;
 
-    if (!fs.existsSync(picturesFolder)) {
-      fs.mkdirSync(picturesFolder);
+    const format = outputFormat.toLocaleLowerCase();
+    const folderName = format + "-pictures";
+    const outputFolder = currentDirectory + "/" + folderName;
+
+    if (!fs.existsSync(outputFolder)) {
+      fs.mkdirSync(outputFolder);
     }
 
-    const heicFile = fileName.replace(".heic", `.${format}`);
-    const absolutePath = `${picturesFolder}/${heicFile}`;
-
+    const absolutePath = `${outputFolder}/${fileName}.${format}`;
     await fs.writeFileSync(absolutePath, outputBuffer);
 
     const base64 = Buffer.from(outputBuffer).toString("base64");
