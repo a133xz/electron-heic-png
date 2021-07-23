@@ -89,13 +89,10 @@ export default defineComponent({
     };
   },
   mounted() {
-    electron.on(
-      "fileConverted",
-      (event: any, base64: string, newPath: string) => {
-        this.isConverted(base64, newPath);
-      }
-    );
-    electron.on("isError", () => {
+    electron.receive("fileConverted", (base64: string, newPath: string) => {
+      this.isConverted(base64, newPath);
+    });
+    electron.receive("isError", () => {
       this.isError(true);
     });
   },
@@ -145,13 +142,13 @@ export default defineComponent({
       }
     },
     convertFile(file: MyFile) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         if (
           (file.type && file.type !== "image/heic") ||
-          !/\.heic$/i.test(file.name)
+          !/\.heic$/i.test(file.name.toLowerCase())
         ) {
           this.fileTypeError();
-          return reject("Error");
+          return resolve("Error");
         }
         this.resolvePromise = resolve;
 
@@ -177,6 +174,7 @@ export default defineComponent({
       const arrPosition = this.images.length - 1;
       this.images[arrPosition].src = base64;
       this.images[arrPosition].path = fullPath;
+
       this.setProgressAndResolve();
       this.resetOnComplete();
     },
