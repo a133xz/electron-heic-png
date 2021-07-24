@@ -9,7 +9,7 @@
     <div
       id="dragzone"
       class="area"
-      :class="{ active: active, hasFiles: hasFiles }"
+      :class="{ active: isDragEnter, hasFiles: hasFiles }"
       draggable="true"
       @dragenter="dragenter"
       @dragleave="dragleave"
@@ -33,7 +33,7 @@
           v-on:click="openLink(image.path)"
           v-if="image.path"
         >
-          <div class="list-item-img" v-if="image.path">
+          <div class="list-item-img">
             <img :src="image.src" alt="preview" />
           </div>
           <div class="list-item-text">
@@ -65,9 +65,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
-const expose: any = window;
-const electron = expose.electron;
+import useElectronBridge from "../composables/useElectronBridge";
 
 export default defineComponent({
   name: "DragZone",
@@ -76,45 +74,38 @@ export default defineComponent({
       type: String
     }
   },
-  data: () => {
+  setup(props) {
+    const { progress, isLoading, images, loopFiles, openLink } =
+      useElectronBridge(props);
     return {
-      active: false,
-      isLoading: false,
-      isFired: false,
-      images: [] as Items,
-      totalFiles: 0,
-      indexItem: 0,
-      progress: 0,
-      resolvePromise: null as any
+      progress,
+      isLoading,
+      images,
+      loopFiles,
+      openLink
     };
   },
-  mounted() {
-    electron.receive("fileConverted", (base64: string, newPath: string) => {
-      this.isConverted(base64, newPath);
-    });
-    electron.receive("isError", () => {
-      this.isError(true);
-    });
+  data: () => {
+    return {
+      isDragEnter: false
+    };
   },
   computed: {
     hasFiles(): boolean {
-      return this.totalFiles > 0;
-    },
-    loopCompleted(): boolean {
-      return this.indexItem === this.totalFiles;
+      return this.images.length > 0;
     }
   },
   methods: {
     dragenter: function (event: DragEvent) {
       event.preventDefault();
       event.stopPropagation();
-      this.active = true;
+      this.isDragEnter = true;
       return false;
     },
     dragleave: function (event: DragEvent) {
       event.stopPropagation();
       event.preventDefault();
-      this.active = false;
+      this.isDragEnter = false;
       return false;
     },
     onChangeInput: function (event: Event) {
@@ -125,89 +116,13 @@ export default defineComponent({
       return false;
     },
     drop: function (event: DragEvent) {
-      this.isLoading = true;
       event.preventDefault();
       event.stopPropagation();
-      // Use DataTransferItemList interface to access the file(s)
+      this.isDragEnter = false;
       const files = event.dataTransfer.files;
+      // Calling Electron bridge
       this.loopFiles(files);
       return false;
-    },
-    async loopFiles(files: FileList) {
-      this.totalFiles = files.length;
-
-      for (var i = 0; i < files.length; i++) {
-        const file: MyFile = files[i];
-        await this.convertFile(file);
-      }
-    },
-    convertFile(file: MyFile) {
-      return new Promise((resolve) => {
-        if (
-          (file.type && file.type !== "image/heic") ||
-          !/\.heic$/i.test(file.name.toLowerCase())
-        ) {
-          this.fileTypeError();
-          return resolve("Error");
-        }
-        this.resolvePromise = resolve;
-
-        const fileName = file.name;
-        const filePath = file.path;
-        const shortenFileName =
-          fileName.length > 10 ? fileName.substring(0, 10) + "..." : fileName;
-        const outputFormat = this.format;
-
-        // Set a preview version
-        this.images.push({
-          src: "",
-          name: shortenFileName,
-          path: "",
-          format: outputFormat
-        });
-
-        // Send to Electron
-        electron.send("convertToHeic", { filePath, outputFormat });
-      });
-    },
-    isConverted: function (base64: string, fullPath: string) {
-      const arrPosition = this.images.length - 1;
-      this.images[arrPosition].src = base64;
-      this.images[arrPosition].path = fullPath;
-
-      this.setProgressAndResolve();
-      this.resetOnComplete();
-    },
-    setProgressAndResolve() {
-      this.indexItem++;
-      this.progress = (this.indexItem * 100) / this.totalFiles;
-      this.resolvePromise();
-    },
-    isError(backendError?: boolean) {
-      if (backendError) {
-        const arrPosition = this.images.length - 1;
-        this.images[arrPosition].error = true;
-        this.setProgressAndResolve();
-      } else {
-        this.totalFiles += -1;
-      }
-      this.resetOnComplete();
-    },
-    resetOnComplete() {
-      this.loopCompleted && this.reset();
-    },
-    reset() {
-      this.isLoading = false;
-      this.active = false;
-      this.progress = 0;
-      this.indexItem = 0;
-    },
-    fileTypeError() {
-      electron.send("showFileTypeError");
-      this.isError();
-    },
-    async openLink(path: string) {
-      await electron.showItemInFolder(path);
     }
   }
 });
