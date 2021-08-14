@@ -75,6 +75,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    //...useElectronBridge(props);
     const { progress, isLoading, images, loopFiles, openLink } =
       useElectronBridge(props);
     return {
