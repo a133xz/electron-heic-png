@@ -12,7 +12,7 @@ This project is a wrapper of [this npm package](https://www.npmjs.com/package/he
 
 👉 So [check out the boilerplate](https://github.com/a133xz/electron-vuejs-parcel-boilerplate) if you're interested in creating a similar project.
 
-App designed by [Pang Lozano](https://dribbble.com/panglozano).
+App designed by [Antonio Lozano](https://dribbble.com/panglozano).
 
 ## 💻 Scripts
 
