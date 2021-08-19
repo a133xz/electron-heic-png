@@ -2,7 +2,7 @@
 
 Your new desktop app to convert HEIC files (iOS photos) to PNG or JPG. 
 
-👉 [Download it here.](https://github.com/a133xz/electron-heic-png/releases/tag/v1.0.11)
+👉 [Download it here.](https://github.com/a133xz/electron-heic-png/releases/tag/v1.0.11) for Windows and Mac.
 
 <img src="https://github.com/a133xz/electron-vuejs-parcel-boilerplate/blob/master/real-world-example.gif?raw=true" width="400">
 
