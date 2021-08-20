@@ -1,11 +1,11 @@
-const { ipcMain, dialog } = require("electron");
-const fs = require("fs");
-const path = require("path");
+const { ipcMain, dialog } = require('electron');
+const fs = require('fs');
+const path = require('path');
 
-const convert = require("heic-convert");
+const convert = require('heic-convert');
 
 // Events
-ipcMain.on("convertToHeic", (event, { filePath, outputFormat }) => {
+ipcMain.on('convertToHeic', (event, { filePath, outputFormat }) => {
   (async () => {
     const inputBuffer = fs.readFileSync(filePath);
     const outputBuffer = await convert({
@@ -19,8 +19,8 @@ ipcMain.on("convertToHeic", (event, { filePath, outputFormat }) => {
     const currentDirectory = file.dir;
 
     const format = outputFormat.toLocaleLowerCase();
-    const folderName = format + "-pictures";
-    const outputFolder = currentDirectory + "/" + folderName;
+    const folderName = format + '-pictures';
+    const outputFolder = currentDirectory + '/' + folderName;
 
     if (!fs.existsSync(outputFolder)) {
       fs.mkdirSync(outputFolder);
@@ -29,22 +29,22 @@ ipcMain.on("convertToHeic", (event, { filePath, outputFormat }) => {
     const absolutePath = `${outputFolder}/${fileName}.${format}`;
     await fs.writeFileSync(absolutePath, outputBuffer);
 
-    const base64 = Buffer.from(outputBuffer).toString("base64");
-    const base64Encoded = "data:image/jpg;base64," + base64;
-    event.reply("fileConverted", base64Encoded, absolutePath);
+    const base64 = Buffer.from(outputBuffer).toString('base64');
+    const base64Encoded = 'data:image/jpg;base64,' + base64;
+    event.reply('fileConverted', base64Encoded, absolutePath);
   })().catch((e) => {
     console.error(e.message);
     dialog.showMessageBoxSync({
-      type: "error",
-      message: "Error converting the file"
+      type: 'error',
+      message: 'Error converting the file'
     });
-    event.reply("isError");
+    event.reply('isError');
   });
 });
 
-ipcMain.on("showFileTypeError", () => {
+ipcMain.on('showFileTypeError', () => {
   dialog.showMessageBoxSync({
-    type: "error",
-    message: "Only HEIC allowed"
+    type: 'error',
+    message: 'Only HEIC allowed'
   });
 });

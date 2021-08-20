@@ -21,17 +21,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 export default defineComponent({
-  name: "TypeSelector",
+  name: 'TypeSelector',
   data() {
     return {
-      picked: ""
+      picked: ''
     };
   },
   watch: {
     picked() {
-      this.$emit("update-format", this.picked);
+      this.$emit('update-format', this.picked);
     }
   }
 });
@@ -46,7 +46,7 @@ export default defineComponent({
   display: flex;
   text-align: center;
 
-  input[type="radio"] {
+  input[type='radio'] {
     opacity: 0;
     position: fixed;
     width: 0;
@@ -64,7 +64,7 @@ export default defineComponent({
     }
   }
 
-  input[type="radio"] {
+  input[type='radio'] {
     &:checked + label {
       background-image: linear-gradient(
         to right,

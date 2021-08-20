@@ -64,11 +64,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import useElectronBridge from "../composables/useElectronBridge";
+import { defineComponent } from 'vue';
+import useElectronBridge from '../composables/useElectronBridge';
 
 export default defineComponent({
-  name: "DragZone",
+  name: 'DragZone',
   props: {
     format: {
       type: String
@@ -76,6 +76,7 @@ export default defineComponent({
   },
   setup(props) {
     //...useElectronBridge(props);
+
     const { progress, isLoading, images, loopFiles, openLink } =
       useElectronBridge(props);
     return {
@@ -112,7 +113,7 @@ export default defineComponent({
     onChangeInput: function (event: Event) {
       event.preventDefault();
       event.stopPropagation();
-      const files: FileList = <FileList>(<HTMLInputElement>event.target).files;
+      const files: FileList = event.target.files;
       this.loopFiles(files);
       return false;
     },

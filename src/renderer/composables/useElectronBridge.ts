@@ -1,33 +1,39 @@
-import { ref, onMounted } from "vue";
+import { ref, onMounted } from 'vue';
 
 const expose: any = window;
 const electron = expose.electron;
 
-export default function useElectronBridge(props: any) {
+interface Props {
+  format: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export default function useElectronBridge(props: Props) {
   onMounted(() => {
-    electron.receive("fileConverted", (base64: string, newPath: string) => {
+    electron.receive('fileConverted', (base64: string, newPath: string) => {
       isConverted(base64, newPath);
     });
-    electron.receive("isError", () => {
+    electron.receive('isError', () => {
       isError(true);
     });
   });
 
   // Data
-  let totalFiles = ref(0);
-  let isLoading = ref(false);
-  let images = ref([] as Items);
-  let progress = ref(0);
+  const totalFiles = ref(0);
+  const isLoading = ref(false);
+  const images = ref([] as Items);
+  //const images = ref([]) as Ref<Items>;
+  const progress = ref(0);
 
   // Private
   let indexItem = 0;
-  let resolvePromise = null as any;
+  let resolvePromise: any = null;
 
   // Public Methods
   const loopFiles = async (files: FileList) => {
     isLoading.value = true;
     totalFiles.value = files.length;
-    for (var i = 0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       const file: MyFile = files[i];
       await convertFile(file);
     }
@@ -40,27 +46,31 @@ export default function useElectronBridge(props: any) {
   // Methods
   const convertFile = function (file: MyFile) {
     return new Promise((resolve) => {
-      if ((file.type && file.type !== "image/heic") || !/\.heic$/i.test(file.name.toLowerCase())) {
+      if (
+        (file.type && file.type !== 'image/heic') ||
+        !/\.heic$/i.test(file.name.toLowerCase())
+      ) {
         fileTypeError();
-        return resolve("isError");
+        return resolve('isError');
       }
       resolvePromise = resolve;
 
       const fileName = file.name;
       const filePath = file.path;
-      const shortenFileName = fileName.length > 10 ? fileName.substring(0, 10) + "..." : fileName;
+      const shortenFileName =
+        fileName.length > 10 ? fileName.substring(0, 10) + '...' : fileName;
       const outputFormat = props.format;
 
       // Set a preview version
       images.value.push({
-        src: "",
+        src: '',
         name: shortenFileName,
-        path: "",
+        path: '',
         format: outputFormat
       });
 
       // Send to Electron
-      electron.send("convertToHeic", { filePath, outputFormat });
+      electron.send('convertToHeic', { filePath, outputFormat });
     });
   };
 
@@ -105,7 +115,7 @@ export default function useElectronBridge(props: any) {
   };
 
   const fileTypeError = () => {
-    electron.send("showFileTypeError");
+    electron.send('showFileTypeError');
     isError();
   };
 

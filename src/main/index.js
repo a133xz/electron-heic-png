@@ -1,10 +1,13 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
-const path = require("path");
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const path = require('path');
 const isProduction =
-  process.env.NODE_ENV === "production" || !process || !process.env || !process.env.NODE_ENV;
+  process.env.NODE_ENV === 'production' ||
+  !process ||
+  !process.env ||
+  !process.env.NODE_ENV;
 const isDevelopment = !isProduction;
 
-const menu = require("./menu");
+const menu = require('./menu');
 const port = 3000; // Hardcoded; needs to match webpack.development.js and package.json
 const selfHost = `http://localhost:${port}`;
 
@@ -28,14 +31,14 @@ async function createWindow() {
   // }
   // Create the browser window.
   win = new BrowserWindow({
-    titleBarStyle: "hiddenInset",
+    titleBarStyle: 'hiddenInset',
     width: 360,
     height: 450,
     minWidth: 360,
     minHeight: 450,
-    icon: path.join(__dirname, "icon.png"),
+    icon: path.join(__dirname, 'icon.png'),
     webPreferences: {
-      preload: path.join(__dirname, "preload.js")
+      preload: path.join(__dirname, 'preload.js')
     }
   });
 
@@ -45,19 +48,19 @@ async function createWindow() {
     win.loadURL(selfHost);
   } else {
     //win.loadURL(`${Protocol.scheme}://rse/index.html`);
-    win.loadURL(`file://${path.join(__dirname, "../renderer/index.html")}`);
+    win.loadURL(`file://${path.join(__dirname, '../renderer/index.html')}`);
   }
 
   // Only do these things when in development
   if (isDevelopment) {
     // Reload
     try {
-      require("electron-reloader")(module);
+      require('electron-reloader')(module);
     } catch (_) {}
     // Errors are thrown if the dev tools are opened
     // before the DOM is ready
-    win.webContents.once("dom-ready", async () => {
-      require("electron-debug")(); // https://github.com/sindresorhus/electron-debug
+    win.webContents.once('dom-ready', async () => {
+      require('electron-debug')(); // https://github.com/sindresorhus/electron-debug
       win.webContents.openDevTools();
     });
   }
@@ -66,7 +69,7 @@ async function createWindow() {
   menu;
 
   // Emitted when the window is closed.
-  win.on("closed", () => {
+  win.on('closed', () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
@@ -77,18 +80,18 @@ async function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+app.on('ready', createWindow);
 
 // Quit when all windows are closed.
-app.on("window-all-closed", () => {
+app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== "darwin") {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-app.on("activate", () => {
+app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -96,22 +99,22 @@ app.on("activate", () => {
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
-  if (process.platform === "win32") {
-    process.on("message", (data) => {
-      if (data === "graceful-exit") {
+  if (process.platform === 'win32') {
+    process.on('message', (data) => {
+      if (data === 'graceful-exit') {
         app.quit();
       }
     });
   } else {
-    process.on("SIGTERM", () => {
+    process.on('SIGTERM', () => {
       app.quit();
     });
   }
 }
 
 // https://electronjs.org/docs/tutorial/security#12-disable-or-limit-navigation
-app.on("web-contents-created", (event, contents) => {
-  contents.on("will-navigate", (contentsEvent, navigationUrl) => {
+app.on('web-contents-created', (event, contents) => {
+  contents.on('will-navigate', (contentsEvent, navigationUrl) => {
     /* eng-disable LIMIT_NAVIGATION_JS_CHECK  */
     const parsedUrl = new URL(navigationUrl);
     const validOrigins = [selfHost];
@@ -126,7 +129,7 @@ app.on("web-contents-created", (event, contents) => {
     }
   });
 
-  contents.on("will-redirect", (contentsEvent, navigationUrl) => {
+  contents.on('will-redirect', (contentsEvent, navigationUrl) => {
     const parsedUrl = new URL(navigationUrl);
     const validOrigins = [];
 
@@ -141,14 +144,17 @@ app.on("web-contents-created", (event, contents) => {
   });
 
   // https://electronjs.org/docs/tutorial/security#11-verify-webview-options-before-creation
-  contents.on("will-attach-webview", (contentsEvent, webPreferences, params) => {
-    // Strip away preload scripts if unused or verify their location is legitimate
-    delete webPreferences.preload;
-    delete webPreferences.preloadURL;
+  contents.on(
+    'will-attach-webview',
+    (contentsEvent, webPreferences, params) => {
+      // Strip away preload scripts if unused or verify their location is legitimate
+      delete webPreferences.preload;
+      delete webPreferences.preloadURL;
 
-    // Disable Node.js integration
-    webPreferences.nodeIntegration = false;
-  });
+      // Disable Node.js integration
+      webPreferences.nodeIntegration = false;
+    }
+  );
 
   // https://electronjs.org/docs/tutorial/security#13-disable-or-limit-creation-of-new-windows
   // This code replaces the old "new-window" event handling;
@@ -164,14 +170,14 @@ app.on("web-contents-created", (event, contents) => {
       );
 
       return {
-        action: "deny"
+        action: 'deny'
       };
     }
 
     return {
-      action: "allow"
+      action: 'allow'
     };
   });
 });
 
-require("./events");
+require('./events');

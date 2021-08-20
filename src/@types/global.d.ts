@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 interface MyFile extends File {
   path?: string;
 }
@@ -10,4 +11,4 @@ interface Item {
   format: string;
 }
 
-interface Items extends Array<Item> {}
+type Items = Array<Item>;
