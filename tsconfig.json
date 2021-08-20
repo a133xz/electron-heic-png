@@ -1,32 +1,40 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "strictNullChecks": false,
-        "importHelpers": true,
-        "moduleResolution": "node",
-        "target": "esnext",
-        "module": "esnext",
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "sourceMap": true,
-        "allowJs": true,
-        "baseUrl": ".",
-        "noEmit": true,
-        "jsx": "preserve",
-    },
-    "include": [
-        "./src/**/*.ts",
-        "./src/**/*.vue"
-    ],
-    "exclude": [
-        "assets",
-        "node_modules",
-        "*.js"
-    ],
-    "outDir": "./dist",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "strictNullChecks": false,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
     "paths": {
-        "*": [
-            "./src/@types/*.d.ts"
-        ]
+      "@/*": [
+        "src/*"
+      ]
     },
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
